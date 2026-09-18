@@ -1,0 +1,182 @@
+/* ===========================================================
+   Daniel Oluwabiyi Oluwatunmise — Portfolio Stylesheet
+   Purple / torch-glow theme
+   =========================================================== */
+
+:root {
+  --bg: #150f1f;
+  --surface: #1e1730;
+  --text: #f0ecf7;
+  --muted: #b3a6c9;
+  --accent: #a855f7;
+  --accent-bright: #d8b4fe;
+  --glow: rgba(168, 85, 247, 0.55);
+  --border: #3a2e52;
+  --card-dark: #0d0815;
+  --radius: 10px;
+  --max-width: 720px;
+  --transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+:root[data-theme="light"] {
+  --bg: #f6f2fb;
+  --surface: #ffffff;
+  --text: #241b33;
+  --muted: #6b5e82;
+  --accent: #9333ea;
+  --accent-bright: #7e22ce;
+  --glow: rgba(147, 51, 234, 0.25);
+  --border: #ddd0ec;
+  --card-dark: #ece2f8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 48px 20px 80px;
+  background:
+    radial-gradient(600px 300px at 50% -80px, var(--glow), transparent 70%),
+    var(--bg);
+  color: var(--text);
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  font-size: 16px;
+  transition: var(--transition);
+}
+
+h1, h3 {
+  font-family: inherit;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+h1 {
+  max-width: var(--max-width);
+  margin: 28px auto 8px;
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+
+h3 {
+  max-width: var(--max-width);
+  margin: 40px auto 14px;
+  padding-bottom: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent-bright);
+  border-bottom: 1px solid var(--border);
+}
+
+p {
+  max-width: var(--max-width);
+  margin: 0 auto 16px;
+  color: var(--muted);
+}
+
+/* Profile photo: torch-lit glow, like it's catching firelight */
+img {
+  display: block;
+  width: 128px;
+  height: 128px;
+  margin: 0 auto;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--surface);
+  box-shadow:
+    0 0 0 1px var(--border),
+    0 0 40px 6px var(--glow);
+}
+
+ul {
+  max-width: var(--max-width);
+  margin: 0 auto 16px;
+  padding: 20px 24px;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 0 24px rgba(168, 85, 247, 0.08);
+}
+
+ul li {
+  color: var(--text);
+  padding: 6px 0;
+}
+
+ul li:not(:last-child) {
+  border-bottom: 1px dashed var(--border);
+}
+
+/* Skills list: each line becomes a row with the stars pushed right */
+h3:has(+ ul) + ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+a {
+  color: var(--accent-bright);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease, text-shadow 0.15s ease;
+}
+
+a:hover,
+a:focus-visible {
+  border-bottom-color: var(--accent-bright);
+  text-shadow: 0 0 12px var(--glow);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+article {
+  max-width: var(--max-width);
+  margin: 48px auto 0;
+  padding: 20px 24px;
+  background: var(--card-dark);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+
+footer {
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+#theme-toggle {
+  display: block;
+  margin: 0 auto 32px;
+  padding: 8px 18px;
+  background: var(--surface);
+  color: var(--accent-bright);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+#theme-toggle:hover,
+#theme-toggle:focus-visible {
+  border-color: var(--accent-bright);
+}
+
+h3:has(+ ul) + ul li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
