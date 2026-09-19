@@ -112,6 +112,11 @@ ul li:not(:last-child) {
   border-bottom: 1px dashed var(--border);
 }
 
+ul li a {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
 /* Skills list: each line becomes a row with the stars pushed right */
 h3:has(+ ul) + ul li {
   display: flex;
