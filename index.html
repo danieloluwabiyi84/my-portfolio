@@ -2,91 +2,137 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Page title</title>
+    <title>Daniel Oluwabiyi Oluwatunmise — Developer Portfolio</title>
     <link rel="stylesheet" href="index.css">
-    
 </head>
 <body>
     <button id="theme-toggle" onclick="toggleTheme()">☀ Light mode</button>
-    
+
+    <nav class="site-nav">
+        <div class="nav-row">
+            <a href="#education" class="nav-link">Education</a>
+            <span class="nav-sep">|</span>
+            <a href="#skills" class="nav-link">Skills</a>
+            <span class="nav-sep">|</span>
+            <a href="#projects" class="nav-link">Projects</a>
+        </div>
+        <div class="nav-row">
+            <a href="my-hobbies.html" class="nav-link">Hobbies</a>
+            <span class="nav-sep">|</span>
+            <a href="#contact" class="nav-link">Contact</a>
+        </div>
+    </nav>
+
     <div style="text-align:center; margin-bottom: 12px;">
-  <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="32" cy="32" r="30" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
-    <text x="32" y="42" font-family="Arial, sans-serif" font-size="26" font-weight="700"
-          fill="var(--accent-bright)" text-anchor="middle">DO</text>
-  </svg>
-</div>        
+        <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="30" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
+            <text x="32" y="42" font-family="Arial, sans-serif" font-size="26" font-weight="700"
+                  fill="var(--accent-bright)" text-anchor="middle">DO</text>
+        </svg>
+    </div>
 
-    <h1>welcome to Daniel Oluwabiyi Oluwatunmise developer website</h1>
-    
-    <img src="profile-picture.png" alt="photo of Daniel Oluwabiyi Oluwatunmise">
+    <h1>Welcome to Daniel Oluwabiyi Oluwatunmise's Developer Website</h1>
 
-<p>Daniel Oluwabiyi Oluwatunmise is an aspiring Web Developer with a strong passion for building clean, functional, and user-focused websites. As a beginner in the field, he is dedicated to learning and mastering modern web technologies and development principles.</p>
+    <img src="profile-picture.png" alt="Photo of Daniel Oluwabiyi Oluwatunmise">
 
-<p>He is enthusiastic, detail-oriented, and committed to continuous growth, with a keen interest in developing responsive and efficient web solutions. He is eager to apply his foundational knowledge to real-world projects and contribute to a collaborative development environment.</p>
+    <p>Daniel Oluwabiyi Oluwatunmise is an aspiring web developer with a strong passion for building clean, functional, and user-focused websites. As a beginner in the field, he is dedicated to learning and mastering modern web technologies and development principles.</p>
 
-<h3>Education</h3>
+    <p>He is enthusiastic, detail-oriented, and committed to continuous growth, with a keen interest in developing responsive and efficient web solutions. He is eager to apply his foundational knowledge to real-world projects and contribute to a collaborative development environment.</p>
 
-  <ul>
-    <li>Attend Copeland college a secondary school at Ikorodu Lagos Nigeria and graduated 2026.</li>  
-    </ul> 
-  
-<h3>Work experience/My project</h3>
-  <ul>
-    <li>I do not have any working experience,
-    I am just building my portfolio and also ready to learn.</li>
- </ul>
+    <div style="text-align:center; margin: 24px auto;">
+        <a href="resume.pdf" download class="resume-btn">📄 Download Resume</a>
+    </div>
 
-<h3>skills</h3>
-  <ul>
-      <li>Html master⭐⭐⭐⭐</li>
-      <li>css master⭐⭐⭐⭐</li>
-      <li>js intermediate⭐⭐</li>
-      <li>python intermediate ⭐⭐</li> 
-  </ul>
-  
-<h3>Awards/Certification</h3>
-  <ul> 
-      <li>I do not have any certificate or award ,I am a developer and if able to get on a team of developer it will also help me to expanding my knowledge software technologies.</li>
-  </ul>
+    <div class="reveal">
+        <h3 id="education">Education</h3>
+        <ul>
+            <li>Attended Copeland College, a secondary school in Ikorodu, Lagos, Nigeria, and graduated in 2026.</li>
+        </ul>
+    </div>
 
-<h3>Others</h3>
-    <h3><a href="my-hobbies.html">My hobbies</a></h3>
-    <article>
+    <div class="reveal">
+        <h3>Work Experience / My Projects</h3>
+        <ul>
+            <li>I do not have any work experience yet. I am just building my portfolio and am ready to learn.</li>
+        </ul>
+    </div>
+
+    <div class="reveal">
+        <h3 id="skills">Skills</h3>
+        <div class="skills-container">
+            <div class="skill">
+                <div class="skill-label"><span>HTML</span><span>90%</span></div>
+                <div class="skill-bar"><div class="skill-fill" data-level="90%"></div></div>
+            </div>
+            <div class="skill">
+                <div class="skill-label"><span>CSS</span><span>90%</span></div>
+                <div class="skill-bar"><div class="skill-fill" data-level="90%"></div></div>
+            </div>
+            <div class="skill">
+                <div class="skill-label"><span>JavaScript</span><span>50%</span></div>
+                <div class="skill-bar"><div class="skill-fill" data-level="50%"></div></div>
+            </div>
+            <div class="skill">
+                <div class="skill-label"><span>Python</span><span>50%</span></div>
+                <div class="skill-bar"><div class="skill-fill" data-level="50%"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="reveal">
+        <h3>Awards / Certification</h3>
+        <ul>
+            <li>I do not have any certificates or awards yet. I am a developer, and joining a team of developers would help me expand my knowledge of software technologies.</li>
+        </ul>
+    </div>
+
+    <div class="reveal">
+        <h3 id="projects">Projects</h3>
+        <ul>
+            <li>
+                <strong>Personal Developer Portfolio</strong><br>
+                A responsive portfolio site built with HTML, CSS and JavaScript, featuring a dark/light theme toggle, scroll animations, and a sticky nav bar.<br>
+                <a href="https://github.com/danieloluwabiyi84/my-portfolio" target="_blank">View source on GitHub</a>
+            </li>
+        </ul>
+    </div>
+
+    <h3><a href="my-hobbies.html">My Hobbies</a></h3>
+
+    <article class="reveal" id="contact">
         <h3>My Contact</h3>
-<ul>
-    <li>
-        
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--accent-bright)">
-    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-</svg>
-
-        Email: <a href="mailto:danieloluwabiyi84@gmail.com">danieloluwabiyi84@gmail.com</a>
-    </li>
-    <li>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--accent-bright)">
-            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.72 14.16c-.24.68-1.4 1.3-1.93 1.35-.5.05-1.06.28-3.6-.75-3.05-1.23-4.98-4.36-5.13-4.56-.15-.2-1.22-1.62-1.22-3.09 0-1.47.77-2.19 1.05-2.49.27-.3.6-.37.8-.37h.58c.19 0 .43-.03.67.51.24.55.83 1.9.9 2.04.07.14.12.3.02.49-.1.19-.15.31-.3.48-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.35 1.46.29.15.46.13.63-.08.17-.21.72-.84.91-1.13.19-.29.39-.24.65-.14.27.1 1.7.8 1.99.95.29.14.48.21.55.33.07.12.07.68-.17 1.34z"/>
-        </svg>
-        WhatsApp: <a href="https://wa.me/23408080923053" target="_blank">+234 08080923053</a>
-    </li>
-    <li>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--accent-bright)">
-            <path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85 0 1.34-.01 2.42-.01 2.75 0 .27.18.58.69.48A10 10 0 0022 12c0-5.52-4.48-10-10-10z"/>
-        </svg>
-        GitHub: <a href="https://github.com/danieloluwabiyi84" target="_blank">danieloluwabiyi84</a>
-    </li>
-    <li>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--accent-bright)">
-            <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zM8.34 18.34V9.67H5.67v8.67h2.67zM7 8.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM18.34 18.34v-4.7c0-2.52-1.35-3.69-3.15-3.69-1.45 0-2.1.8-2.46 1.36v-1.16h-2.67c.04.75 0 8.19 0 8.19h2.67v-4.57c0-.24.02-.49.09-.66.2-.49.65-1 1.4-1 .99 0 1.39.75 1.39 1.86v4.37h2.73z"/>
-        </svg>
-        LinkedIn: <span style="color: var(--muted)">Not available yet</span>
-    </li>
-</ul>
-    <footer>Copyright © 2026 Daniel Oluwabiyi Oluwatunmise,all right reserved.</footer>
+        <ul>
+            <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--accent-bright)">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+                Email: <a href="mailto:danieloluwabiyi84@gmail.com">danieloluwabiyi84@gmail.com</a>
+            </li>
+            <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--accent-bright)">
+                    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.72 14.16c-.24.68-1.4 1.3-1.93 1.35-.5.05-1.06.28-3.6-.75-3.05-1.23-4.98-4.36-5.13-4.56-.15-.2-1.22-1.62-1.22-3.09 0-1.47.77-2.19 1.05-2.49.27-.3.6-.37.8-.37h.58c.19 0 .43-.03.67.51.24.55.83 1.9.9 2.04.07.14.12.3.02.49-.1.19-.15.31-.3.48-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.35 1.46.29.15.46.13.63-.08.17-.21.72-.84.91-1.13.19-.29.39-.24.65-.14.27.1 1.7.8 1.99.95.29.14.48.21.55.33.07.12.07.68-.17 1.34z"/>
+                </svg>
+                WhatsApp: <a href="https://wa.me/23408080923053" target="_blank">+234 08080923053</a>
+            </li>
+            <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--accent-bright)">
+                    <path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85 0 1.34-.01 2.42-.01 2.75 0 .27.18.58.69.48A10 10 0 0022 12c0-5.52-4.48-10-10-10z"/>
+                </svg>
+                GitHub: <a href="https://github.com/danieloluwabiyi84" target="_blank">danieloluwabiyi84</a>
+            </li>
+            <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--accent-bright)">
+                    <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zM8.34 18.34V9.67H5.67v8.67h2.67zM7 8.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM18.34 18.34v-4.7c0-2.52-1.35-3.69-3.15-3.69-1.45 0-2.1.8-2.46 1.36v-1.16h-2.67c.04.75 0 8.19 0 8.19h2.67v-4.57c0-.24.02-.49.09-.66.2-.49.65-1 1.4-1 .99 0 1.39.75 1.39 1.86v4.37h2.73z"/>
+                </svg>
+                LinkedIn: <span style="color: var(--muted)">Not available yet</span>
+            </li>
+        </ul>
+        <footer>Copyright © 2026 Daniel Oluwabiyi Oluwatunmise, all rights reserved.</footer>
     </article>
+
+    <button id="back-to-top" aria-label="Back to top">↑</button>
+
     <script src="script.js"></script>
 </body>
 </html>
