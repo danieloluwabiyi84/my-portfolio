@@ -152,6 +152,45 @@ a:focus-visible {
   border-radius: 2px;
 }
 
+/* Contact: icon-only round buttons, each one a link */
+.contact-icons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 18px 0 10px;
+}
+
+.contact-icons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-icons a:hover,
+.contact-icons a:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--accent-bright);
+  box-shadow: 0 0 16px var(--glow);
+  text-shadow: none;
+}
+
+.contact-icons a:focus-visible {
+  border-radius: 50%;
+}
+
+.contact-icons svg {
+  width: 26px;
+  height: 26px;
+  fill: var(--accent-bright);
+}
+
 article {
   max-width: var(--max-width);
   margin: 48px auto 0;
