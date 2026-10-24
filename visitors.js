@@ -62,7 +62,9 @@
     fetch(BASE + '/counter/TOTAL.json')
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
-        if (data && data.count) {
+        // GoatCounter sends the total as text such as "1 234"; stay hidden while it is still 0
+        var total = data ? parseInt(String(data.count).replace(/\D/g, ''), 10) : 0;
+        if (total > 0) {
           number.textContent = data.count;
           line.hidden = false;
         }
