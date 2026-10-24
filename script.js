@@ -4,7 +4,7 @@ function applyTheme(theme) {
   if (btn) {
     btn.textContent = theme === 'light' ? '🌙 Dark mode' : '☀ Light mode';
   }
-  localStorage.setItem('theme', theme);
+  try { localStorage.setItem('theme', theme); } catch (e) { /* storage blocked */ }
 }
 
 function toggleTheme() {
@@ -14,8 +14,53 @@ function toggleTheme() {
 
 // Restore saved theme on page load
 (function () {
-  const saved = localStorage.getItem('theme') || 'dark';
+  let saved = 'dark';
+  try { saved = localStorage.getItem('theme') || 'dark'; } catch (e) { /* storage blocked */ }
   applyTheme(saved);
+})();
+
+// Text size buttons (A- / A+) beside the theme toggle, remembered for next visit
+(function () {
+  const toggle = document.getElementById('theme-toggle');
+  if (!toggle) return;
+
+  const SIZES = [100, 112, 125, 140];   // percent of the normal text size
+  let level = 0;
+  try { level = Number(localStorage.getItem('textSize')) || 0; } catch (e) { /* storage blocked */ }
+  level = Math.min(Math.max(level, 0), SIZES.length - 1);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'page-tools';
+  toggle.parentNode.insertBefore(wrap, toggle);
+
+  function makeButton(label, title) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'text-btn';
+    b.textContent = label;
+    b.title = title;
+    b.setAttribute('aria-label', title);
+    return b;
+  }
+
+  const smaller = makeButton('A−', 'Smaller text');
+  const larger = makeButton('A+', 'Larger text');
+  wrap.appendChild(smaller);
+  wrap.appendChild(toggle);
+  wrap.appendChild(larger);
+
+  function applySize() {
+    document.documentElement.style.fontSize = SIZES[level] + '%';
+    smaller.disabled = level === 0;
+    larger.disabled = level === SIZES.length - 1;
+    smaller.style.opacity = smaller.disabled ? '0.45' : '1';
+    larger.style.opacity = larger.disabled ? '0.45' : '1';
+    try { localStorage.setItem('textSize', String(level)); } catch (e) { /* storage blocked */ }
+  }
+
+  smaller.addEventListener('click', () => { level = Math.max(0, level - 1); applySize(); });
+  larger.addEventListener('click', () => { level = Math.min(SIZES.length - 1, level + 1); applySize(); });
+  applySize();
 })();
 
 // Nav links: only the last-clicked link stays highlighted
@@ -89,20 +134,29 @@ if (contactForm && window.fetch) {
   });
 }
 
-// Scroll reveal + animated skill bars
+// Scroll reveal + animated skill bars.
+// Content is only hidden (by the CSS class "js-reveal") when this animation can run,
+// so a browser without IntersectionObserver still shows everything.
 const revealEls = document.querySelectorAll('.reveal');
 if (revealEls.length) {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        entry.target.querySelectorAll('.skill-fill').forEach((fill) => {
-          fill.style.width = fill.dataset.level;
-        });
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.2 });
+  if ('IntersectionObserver' in window) {
+    document.documentElement.classList.add('js-reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          entry.target.querySelectorAll('.skill-fill').forEach((fill) => {
+            fill.style.width = fill.dataset.level;
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
 
-  revealEls.forEach((el) => observer.observe(el));
+    revealEls.forEach((el) => observer.observe(el));
+  } else {
+    document.querySelectorAll('.skill-fill').forEach((fill) => {
+      fill.style.width = fill.dataset.level;
+    });
+  }
 }
