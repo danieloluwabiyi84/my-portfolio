@@ -12,7 +12,8 @@
     <meta property="og:url" content="https://danieloluwabiyi84.github.io/my-portfolio/">
     <meta property="og:image" content="https://danieloluwabiyi84.github.io/my-portfolio/project-portfolio.jpg">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="index.css?v=3">
+    <script>if ("IntersectionObserver" in window) document.documentElement.classList.add("js-reveal");</script>
 </head>
 <body>
     <button id="theme-toggle" onclick="toggleTheme()">☀ Light mode</button>
@@ -198,7 +199,7 @@
             <label for="cf-message">Message</label>
             <textarea id="cf-message" name="message" rows="5" maxlength="2000" required></textarea>
 
-            <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
             <input type="hidden" name="_subject" value="New message from my portfolio website">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_template" value="table">
@@ -207,11 +208,16 @@
             <p id="cf-status" role="status" aria-live="polite"></p>
         </form>
 
+        <p class="visit-line" id="visit-line" hidden>👀 <strong id="visit-count"></strong> visits to this portfolio</p>
+        <p class="privacy-note">Visits are counted without cookies or personal data.</p>
+
         <footer>Copyright © 2026 Daniel Oluwabiyi Oluwatunmise, all rights reserved.</footer>
     </article>
 
     <button id="back-to-top" aria-label="Back to top">↑</button>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=3"></script>
+    <script src="guide.js?v=3" defer></script>
+    <script src="visitors.js?v=3" defer></script>
 </body>
 </html>
