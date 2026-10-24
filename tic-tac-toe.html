@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe - Daniel Oluwabiyi Oluwatunmise</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        body {
+            padding: 48px 20px 40px 20px;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ============ Shared layout (same across every theme) ============ */
+
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 0;
+        }
+
+        #status {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+        }
+
+        #board {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .theme-lines {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 300px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .cell {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.6rem;
+            font-weight: 700;
+            cursor: pointer;
+            background: transparent;
+            z-index: 2;
+            transition: background 0.15s ease;
+        }
+
+        .cell[data-index="0"] { top: 0px;   left: 0px; }
+        .cell[data-index="1"] { top: 0px;   left: 100px; }
+        .cell[data-index="2"] { top: 0px;   left: 200px; }
+        .cell[data-index="3"] { top: 100px; left: 0px; }
+        .cell[data-index="4"] { top: 100px; left: 100px; }
+        .cell[data-index="5"] { top: 100px; left: 200px; }
+        .cell[data-index="6"] { top: 200px; left: 0px; }
+        .cell[data-index="7"] { top: 200px; left: 100px; }
+        .cell[data-index="8"] { top: 200px; left: 200px; }
+
+        #reset-btn {
+            display: block;
+            margin: 28px auto 0;
+            padding: 9px 26px;
+            border-radius: 999px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        #score {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 16px;
+        }
+
+        #target-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        #target-control button {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1.5px solid currentColor;
+            background: transparent;
+            color: inherit;
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        #target-value {
+            min-width: 28px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        /* ============ Hamburger menu button (top right, all themes) ============ */
+
+        #menu-btn {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            width: 38px;
+            height: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 25;
+        }
+
+        #menu-btn span {
+            display: block;
+            width: 18px;
+            height: 3px;
+            border-radius: 2px;
+            background: currentColor;
+        }
+
+        #menu-panel {
+            position: fixed;
+            top: 50px;
+            right: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border-radius: 10px;
+            padding: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            z-index: 24;
+            min-width: 190px;
+        }
+
+        .menu-item {
+            text-align: left;
+            padding: 9px 10px;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            color: inherit;
+            font-family: inherit;
+        }
+
+        /* ============ Background picker gallery (full-screen "page") ============ */
+
+        #bg-gallery {
+            position: fixed;
+            inset: 0;
+            z-index: 30;
+            padding: 24px 20px;
+            overflow-y: auto;
+            background: #fdfbf3;
+            color: #2b2b2b;
+        }
+
+        #bg-gallery h2 {
+            text-align: center;
+            font-family: 'Caveat', cursive;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+
+        .bg-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        .bg-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 10px;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .bg-option.selected {
+            border-color: #24408e;
+        }
+
+        .bg-preview {
+            width: 100%;
+            height: 70px;
+            border-radius: 8px;
+        }
+
+        .bg-preview-notebook {
+            background-color: #fdfbf3;
+            background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 9px, #c3d3ef 9px, #c3d3ef 10px);
+            border: 1px solid #ccc;
+        }
+
+        .bg-preview-comic-hashtag {
+            background: #150f1f;
+            background-image: linear-gradient(135deg, #a855f7 40%, #22c55e 60%);
+        }
+
+        .bg-preview-classic-purple {
+            background: #1e1730;
+            border: 1px solid #3a2e52;
+        }
+
+        .bg-label {
+            font-size: 0.9rem;
+        }
+
+        #bg-gallery-close {
+            display: block;
+            margin: 24px auto 0;
+            padding: 8px 24px;
+            border-radius: 999px;
+            border: 2px solid #24408e;
+            background: transparent;
+            color: #24408e;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        /* ============================================================ */
+        /* THEME: notebook (default) — paper background, blue pen lines */
+        /* ============================================================ */
+
+        body[data-bg-theme="notebook"] {
+            background-color: #fdfbf3;
+            background-image: repeating-linear-gradient(
+                to bottom,
+                transparent 0px,
+                transparent 33px,
+                #c3d3ef 33px,
+                #c3d3ef 34px
+            );
+            color: #2b2b2b;
+            font-family: 'Caveat', cursive;
+        }
+
+        body[data-bg-theme="notebook"] h1 { color: #24408e; }
+        body[data-bg-theme="notebook"] #status { color: #333; }
+        body[data-bg-theme="notebook"] .cell.x { color: #24408e; }
+        body[data-bg-theme="notebook"] .cell.o { color: #a5322c; }
+        body[data-bg-theme="notebook"] .cell.winner { background: rgba(36, 64, 142, 0.08); }
+        body[data-bg-theme="notebook"] #reset-btn {
+            background: #fdfbf3; color: #24408e; border: 2px solid #24408e; font-family: 'Caveat', cursive;
+        }
+        body[data-bg-theme="notebook"] #reset-btn:hover { background: #24408e; color: #fdfbf3; }
+        body[data-bg-theme="notebook"] #score { color: #333; }
+        body[data-bg-theme="notebook"] #menu-btn { background: rgba(36, 64, 142, 0.12); color: #24408e; }
+        body[data-bg-theme="notebook"] #menu-panel { background: #fff; color: #222; }
+        body[data-bg-theme="notebook"] .menu-item:hover { background: rgba(36, 64, 142, 0.08); }
+
+        /* ============================================================ */
+        /* THEME: comic-hashtag — dark bg, purple/green slanted lines   */
+        /* ============================================================ */
+
+        body[data-bg-theme="comic-hashtag"] {
+            background: #150f1f;
+            color: #f0ecf7;
+            font-family: 'Bangers', cursive;
+        }
+
+        body[data-bg-theme="comic-hashtag"] h1 {
+            color: #d8b4fe;
+            text-shadow: 3px 3px 0 #22c55e, -1px -1px 0 #150f1f;
+        }
+        body[data-bg-theme="comic-hashtag"] #status { color: #86efac; }
+        body[data-bg-theme="comic-hashtag"] .cell.x { color: #d8b4fe; }
+        body[data-bg-theme="comic-hashtag"] .cell.o { color: #86efac; }
+        body[data-bg-theme="comic-hashtag"] .cell.winner { background: rgba(168, 85, 247, 0.25); }
+        body[data-bg-theme="comic-hashtag"] #reset-btn {
+            background: #a855f7; color: #fff; border: 3px solid #22c55e; font-family: 'Bangers', cursive;
+        }
+        body[data-bg-theme="comic-hashtag"] #reset-btn:hover { background: #22c55e; }
+        body[data-bg-theme="comic-hashtag"] #score { color: #b3a6c9; }
+        body[data-bg-theme="comic-hashtag"] #menu-btn { background: rgba(255, 255, 255, 0.12); color: #d8b4fe; }
+        body[data-bg-theme="comic-hashtag"] #menu-panel { background: #1e1730; color: #f0ecf7; }
+        body[data-bg-theme="comic-hashtag"] .menu-item:hover { background: rgba(255, 255, 255, 0.08); }
+
+        /* ============================================================ */
+        /* THEME: classic-purple — dark bg, bordered box grid           */
+        /* ============================================================ */
+
+        body[data-bg-theme="classic-purple"] {
+            background: #150f1f;
+            color: #f0ecf7;
+            font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body[data-bg-theme="classic-purple"] h1 { color: #f0ecf7; }
+        body[data-bg-theme="classic-purple"] #status { color: #b3a6c9; }
+        body[data-bg-theme="classic-purple"] .cell {
+            background: #1e1730;
+            border: 2px solid #3a2e52;
+            border-radius: 8px;
+        }
+        body[data-bg-theme="classic-purple"] .cell:hover { background: #2a2140; }
+        body[data-bg-theme="classic-purple"] .cell.x { color: #a855f7; }
+        body[data-bg-theme="classic-purple"] .cell.o { color: #d8b4fe; }
+        body[data-bg-theme="classic-purple"] .cell.winner { background: #a855f7; color: #fff; }
+        body[data-bg-theme="classic-purple"] #reset-btn { background: #a855f7; color: #fff; border: none; }
+        body[data-bg-theme="classic-purple"] #reset-btn:hover { background: #d8b4fe; color: #150f1f; }
+        body[data-bg-theme="classic-purple"] #score { color: #b3a6c9; }
+        body[data-bg-theme="classic-purple"] #menu-btn { background: rgba(255, 255, 255, 0.1); color: #f0ecf7; }
+        body[data-bg-theme="classic-purple"] #menu-panel { background: #1e1730; color: #f0ecf7; }
+        body[data-bg-theme="classic-purple"] .menu-item:hover { background: rgba(255, 255, 255, 0.08); }
+
+        /* Which theme's line art shows */
+        body[data-bg-theme="notebook"] .theme-lines-notebook { display: block; }
+        body[data-bg-theme="comic-hashtag"] .theme-lines-comic { display: block; }
+        /* classic-purple shows no line art — uses bordered cells instead */
+
+        /* ============ Mode label + match info ============ */
+
+        #mode-label {
+            text-align: center;
+            font-size: 1.1rem;
+            margin: 2px 0 12px;
+            opacity: 0.85;
+        }
+
+        #match-info {
+            text-align: center;
+            font-size: 0.95rem;
+            margin: 0 0 18px;
+            opacity: 0.85;
+        }
+
+        a.menu-item {
+            display: block;
+            text-decoration: none;
+        }
+
+        /* ============ Fire button (animated shimmer / loading-bar effect) ============ */
+
+        :root {
+            --fire-grad: linear-gradient(90deg, #c62828 0, #ff3d00 25%, #ff9100 50%, #ffd54a 75%, #c62828 100%);
+        }
+
+        .fire,
+        #menu-panel .menu-item.fire:hover {
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+            font-weight: 700;
+            background-color: #ff5a00;
+            background-image: var(--fire-grad);
+            background-size: 200px 100%;
+            background-repeat: repeat-x;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+            animation: fire-flow 1.6s linear infinite, fire-glow 0.9s ease-in-out infinite alternate;
+        }
+
+        .fire::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 45%;
+            background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: translateX(-120%);
+            animation: fire-sweep 1.7s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes fire-flow {
+            from { background-position: 0 0; }
+            to   { background-position: 200px 0; }
+        }
+
+        @keyframes fire-glow {
+            from { box-shadow: 0 0 6px rgba(255, 90, 0, 0.5); }
+            to   { box-shadow: 0 0 16px 3px rgba(255, 170, 0, 0.85); }
+        }
+
+        @keyframes fire-sweep {
+            0%   { transform: translateX(-120%); }
+            70%, 100% { transform: translateX(320%); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .fire, .fire::after { animation: none; }
+        }
+
+        /* ============ Full-screen panels (computer, history, tournament) ============ */
+
+        .panel-page {
+            position: fixed;
+            inset: 0;
+            z-index: 30;
+            padding: 24px 18px 40px;
+            overflow-y: auto;
+            background: #0c0914;
+            color: #f4f0fa;
+            font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .panel-inner {
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .panel-page h2 {
+            text-align: center;
+            margin: 4px 0 6px;
+            font-size: 1.7rem;
+        }
+
+        .panel-sub {
+            text-align: center;
+            opacity: 0.8;
+            margin: 0 0 18px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .panel-label {
+            text-align: center;
+            margin: 0 0 8px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            opacity: 0.7;
+        }
+
+        .panel-page button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .choice {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 100%;
+            text-align: left;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            border: 2px solid #4b3a6b;
+            border-radius: 12px;
+            background: #1e1730;
+            color: inherit;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .choice:hover,
+        .choice:active {
+            border-color: #a855f7;
+        }
+
+        .choice-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .choice-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.35;
+        }
+
+        .chips {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            padding: 7px 14px;
+            border-radius: 999px;
+            border: 2px solid #4b3a6b;
+            background: transparent;
+            color: inherit;
+            font: inherit;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .chip.selected {
+            background: #a855f7;
+            border-color: #a855f7;
+            color: #fff;
+        }
+
+        .panel-btn {
+            display: block;
+            margin: 16px auto 0;
+            padding: 10px 26px;
+            border-radius: 999px;
+            border: 2px solid #a855f7;
+            background: transparent;
+            color: #e9d5ff;
+            font: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .panel-btn.primary {
+            background: #a855f7;
+            color: #fff;
+        }
+
+        .panel-btn.danger {
+            border-color: #ef4444;
+            color: #fca5a5;
+        }
+
+        .panel-btn.fire {
+            border-color: transparent;
+            color: #fff;
+            font-size: 1.1rem;
+            padding: 12px 32px;
+            background-color: #ff5a00;
+            background-image: var(--fire-grad);
+            background-size: 200px 100%;
+            background-repeat: repeat-x;
+        }
+
+        /* Tables + notes */
+
+        .standings {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+            margin-bottom: 14px;
+        }
+
+        .standings th,
+        .standings td {
+            padding: 7px 4px;
+            text-align: center;
+            border-bottom: 1px solid #3a2e52;
+        }
+
+        .standings th:nth-child(2),
+        .standings td:nth-child(2) {
+            text-align: left;
+        }
+
+        .standings th {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.7;
+        }
+
+        .standings tr.me {
+            background: rgba(168, 85, 247, 0.2);
+        }
+
+        .note-box {
+            border: 1px solid #4b3a6b;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 14px;
+            font-size: 0.92rem;
+            line-height: 1.4;
+            background: #1e1730;
+        }
+
+        .note-box strong {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .banner {
+            text-align: center;
+            font-size: 1.15rem;
+            font-weight: 700;
+            padding: 14px 12px;
+            margin-bottom: 14px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #7c2d12, #b45309);
+        }
+
+        /* Score history */
+
+        .hist-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .hist-item {
+            padding: 11px 2px;
+            border-bottom: 1px solid #3a2e52;
+        }
+
+        .hist-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hist-title {
+            font-weight: 700;
+        }
+
+        .hist-detail {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-top: 2px;
+            line-height: 1.35;
+        }
+
+        .hist-date {
+            font-size: 0.78rem;
+            opacity: 0.55;
+            margin-top: 2px;
+        }
+
+        .badge {
+            padding: 2px 9px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .badge-win  { background: #166534; color: #bbf7d0; }
+        .badge-loss { background: #7f1d1d; color: #fecaca; }
+        .badge-draw { background: #78350f; color: #fde68a; }
+        .badge-info { background: #3b2a5a; color: #e9d5ff; }
+
+        .empty-msg {
+            text-align: center;
+            opacity: 0.7;
+            padding: 24px 0;
+        }
+    </style>
+</head>
+<body data-bg-theme="notebook">
+
+    <button id="menu-btn" aria-label="Menu">
+        <span></span><span></span><span></span>
+    </button>
+
+    <div id="menu-panel" class="hidden">
+        <button class="menu-item" id="menu-change-bg">Change Background</button>
+        <button class="menu-item" id="menu-vs-computer">🤖 Play vs Computer</button>
+        <button class="menu-item" id="menu-two-player">👥 2 Players</button>
+        <button class="menu-item" id="menu-score-history">📊 Score History</button>
+        <button class="menu-item fire" id="menu-tournament">🔥 Tournament</button>
+        <a class="menu-item" id="menu-home" href="index.html">🏠 Back to Portfolio</a>
+    </div>
+
+    <div id="bg-gallery" class="hidden">
+        <h2>Choose Background</h2>
+        <div class="bg-grid">
+            <button class="bg-option" data-theme="notebook">
+                <span class="bg-preview bg-preview-notebook"></span>
+                <span class="bg-label">Notebook Pen</span>
+            </button>
+            <button class="bg-option" data-theme="comic-hashtag">
+                <span class="bg-preview bg-preview-comic-hashtag"></span>
+                <span class="bg-label">Comic Hashtag</span>
+            </button>
+            <button class="bg-option" data-theme="classic-purple">
+                <span class="bg-preview bg-preview-classic-purple"></span>
+                <span class="bg-label">Classic Purple</span>
+            </button>
+        </div>
+        <button id="bg-gallery-close">Back to Game</button>
+    </div>
+
+    <div id="computer-panel" class="panel-page hidden">
+        <div class="panel-inner">
+            <h2>🤖 Play vs Computer</h2>
+            <p class="panel-sub">You are X, the computer is O. Pick how tough it should be.</p>
+            <button class="choice" data-level="easy">
+                <span class="choice-title">😌 Easy</span>
+                <span class="choice-desc">Plays at random. Good for warming up.</span>
+            </button>
+            <button class="choice" data-level="medium">
+                <span class="choice-title">🙂 Medium</span>
+                <span class="choice-desc">Takes a win when it sees one and blocks yours.</span>
+            </button>
+            <button class="choice" data-level="hard">
+                <span class="choice-title">😈 Hard</span>
+                <span class="choice-desc">Unbeatable. The best you can do is draw.</span>
+            </button>
+            <button class="panel-btn panel-close">Back to Game</button>
+        </div>
+    </div>
+
+    <div id="history-panel" class="panel-page hidden">
+        <div class="panel-inner">
+            <h2>📊 Score History</h2>
+            <p class="panel-sub" id="history-summary"></p>
+            <ul class="hist-list" id="history-list"></ul>
+            <button class="panel-btn danger" id="history-clear">Clear history</button>
+            <button class="panel-btn panel-close">Back to Game</button>
+        </div>
+    </div>
+
+    <div id="tournament-panel" class="panel-page hidden">
+        <div class="panel-inner">
+            <div id="tournament-body"></div>
+            <button class="panel-btn panel-close">Back to Game</button>
+        </div>
+    </div>
+
+    <h1>Tic Tac Toe</h1>
+    <p id="mode-label"></p>
+    <p id="status">Player X's turn</p>
+
+    <div id="target-control">
+        <span>Match Target:</span>
+        <button id="target-minus" aria-label="Decrease target">−</button>
+        <span id="target-value">5</span>
+        <button id="target-plus" aria-label="Increase target">+</button>
+    </div>
+    <p id="match-info" class="hidden"></p>
+
+    <div id="board">
+        <svg class="theme-lines theme-lines-notebook" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" fill="none">
+            <line x1="92" y1="320" x2="102" y2="-20" stroke="#2a3b8f" stroke-width="3" stroke-linecap="round"/>
+            <line x1="104" y1="320" x2="114" y2="-20" stroke="#2a3b8f" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+            <line x1="192" y1="320" x2="202" y2="-20" stroke="#2a3b8f" stroke-width="3" stroke-linecap="round"/>
+            <line x1="204" y1="320" x2="214" y2="-20" stroke="#2a3b8f" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+            <line x1="-20" y1="94" x2="320" y2="104" stroke="#2a3b8f" stroke-width="3" stroke-linecap="round"/>
+            <line x1="-20" y1="106" x2="320" y2="116" stroke="#2a3b8f" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+            <line x1="-20" y1="194" x2="320" y2="204" stroke="#2a3b8f" stroke-width="3" stroke-linecap="round"/>
+            <line x1="-20" y1="206" x2="320" y2="216" stroke="#2a3b8f" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+        </svg>
+
+        <svg class="theme-lines theme-lines-comic" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+            <line x1="90" y1="320" x2="104" y2="-20" stroke="#a855f7" stroke-width="6" stroke-linecap="round"/>
+            <line x1="102" y1="320" x2="116" y2="-20" stroke="#d8b4fe" stroke-width="4" stroke-linecap="round"/>
+            <line x1="190" y1="320" x2="204" y2="-20" stroke="#a855f7" stroke-width="6" stroke-linecap="round"/>
+            <line x1="202" y1="320" x2="216" y2="-20" stroke="#d8b4fe" stroke-width="4" stroke-linecap="round"/>
+            <line x1="-20" y1="92" x2="320" y2="104" stroke="#22c55e" stroke-width="6" stroke-linecap="round"/>
+            <line x1="-20" y1="102" x2="320" y2="114" stroke="#86efac" stroke-width="4" stroke-linecap="round"/>
+            <line x1="-20" y1="192" x2="320" y2="204" stroke="#22c55e" stroke-width="6" stroke-linecap="round"/>
+            <line x1="-20" y1="202" x2="320" y2="214" stroke="#86efac" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+    </div>
+
+    <button id="reset-btn">Play Again</button>
+
+    <p id="score">X: 0 | O: 0 | Draws: 0</p>
+
+    <script>
+        // =====================================================================
+        //  Tic Tac Toe — game, computer opponent, score history, tournaments
+        // =====================================================================
+
+        // ---------- small helpers ----------
+
+        const store = {
+            get: function (key, fallback) {
+                try {
+                    const raw = localStorage.getItem(key);
+                    return raw === null ? fallback : JSON.parse(raw);
+                } catch (e) {
+                    return fallback;
+                }
+            },
+            set: function (key, value) {
+                try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* storage unavailable */ }
+            },
+            remove: function (key) {
+                try { localStorage.removeItem(key); } catch (e) { /* storage unavailable */ }
+            }
+        };
+
+        function el(tag, props, children) {
+            const node = document.createElement(tag);
+            if (props) {
+                Object.keys(props).forEach(function (k) {
+                    if (k === 'class') node.className = props[k];
+                    else if (k === 'text') node.textContent = props[k];
+                    else if (k.slice(0, 2) === 'on') node.addEventListener(k.slice(2), props[k]);
+                    else node.setAttribute(k, props[k]);
+                });
+            }
+            (children || []).forEach(function (c) {
+                if (c) node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+            });
+            return node;
+        }
+
+        function randomOf(list) {
+            return list[Math.floor(Math.random() * list.length)];
+        }
+
+        function other(p) {
+            return p === 'X' ? 'O' : 'X';
+        }
+
+        function ordinal(n) {
+            const s = ['th', 'st', 'nd', 'rd'];
+            const v = n % 100;
+            return n + (s[(v - 20) % 10] || s[v] || s[0]);
+        }
+
+        // ---------- page elements ----------
+
+        const menuBtn = document.getElementById('menu-btn');
+        const menuPanel = document.getElementById('menu-panel');
+        const bgGallery = document.getElementById('bg-gallery');
+        const bgGalleryClose = document.getElementById('bg-gallery-close');
+        const bgOptions = document.querySelectorAll('.bg-option');
+        const computerPanel = document.getElementById('computer-panel');
+        const historyPanel = document.getElementById('history-panel');
+        const historyList = document.getElementById('history-list');
+        const historySummary = document.getElementById('history-summary');
+        const tournamentPanel = document.getElementById('tournament-panel');
+        const tournamentBody = document.getElementById('tournament-body');
+        const allPanels = [bgGallery, computerPanel, historyPanel, tournamentPanel];
+
+        const cells = document.querySelectorAll('.cell');
+        const statusEl = document.getElementById('status');
+        const scoreEl = document.getElementById('score');
+        const resetBtn = document.getElementById('reset-btn');
+        const modeLabel = document.getElementById('mode-label');
+        const matchInfo = document.getElementById('match-info');
+        const targetControl = document.getElementById('target-control');
+        const targetValueEl = document.getElementById('target-value');
+        const targetMinusBtn = document.getElementById('target-minus');
+        const targetPlusBtn = document.getElementById('target-plus');
+
+        // ---------- menu, panels and background themes ----------
+
+        function openMenu() { menuPanel.classList.remove('hidden'); }
+        function closeMenu() { menuPanel.classList.add('hidden'); }
+
+        function openPanel(panel) {
+            closeMenu();
+            allPanels.forEach(function (p) { p.classList.add('hidden'); });
+            panel.classList.remove('hidden');
+            panel.scrollTop = 0;
+        }
+
+        function closePanels() {
+            allPanels.forEach(function (p) { p.classList.add('hidden'); });
+        }
+
+        function applyTheme(theme) {
+            document.body.setAttribute('data-bg-theme', theme);
+            try { localStorage.setItem('ttt-theme', theme); } catch (e) { /* ignore */ }
+        }
+
+        function markSelectedTheme() {
+            const current = document.body.getAttribute('data-bg-theme');
+            bgOptions.forEach(function (opt) {
+                opt.classList.toggle('selected', opt.dataset.theme === current);
+            });
+        }
+
+        (function restoreTheme() {
+            let saved = 'notebook';
+            try { saved = localStorage.getItem('ttt-theme') || 'notebook'; } catch (e) { /* ignore */ }
+            applyTheme(saved);
+        })();
+
+        menuBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (menuPanel.classList.contains('hidden')) openMenu();
+            else closeMenu();
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!menuPanel.classList.contains('hidden') &&
+                !menuPanel.contains(e.target) &&
+                e.target !== menuBtn) {
+                closeMenu();
+            }
+        });
+
+        document.getElementById('menu-change-bg').addEventListener('click', function () {
+            markSelectedTheme();
+            openPanel(bgGallery);
+        });
+
+        bgOptions.forEach(function (opt) {
+            opt.addEventListener('click', function () {
+                applyTheme(opt.dataset.theme);
+                markSelectedTheme();
+                closePanels();
+            });
+        });
+
+        bgGalleryClose.addEventListener('click', closePanels);
+
+        document.querySelectorAll('.panel-close').forEach(function (btn) {
+            btn.addEventListener('click', closePanels);
+        });
+
+        // ---------- game constants ----------
+
+        const MIN_TARGET = 1;
+        const MAX_TARGET = 200;
+        const WIN_POINTS = 5;    // league points for winning a round
+        const DRAW_POINTS = 2;   // league points each side gets for a drawn round
+
+        const winningLines = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+
+        const LEVELS = {
+            easy:   { icon: '😌', label: 'Easy' },
+            medium: { icon: '🙂', label: 'Medium' },
+            hard:   { icon: '😈', label: 'Hard' }
+        };
+
+        const FORMATS = {
+            1: {
+                name: '1 vs 2', target: 5, bots: 2,
+                title: '1 vs 2 Players',
+                desc: 'You against 2 bots. Everyone plays everyone. First to 5 round wins takes a match.'
+            },
+            2: {
+                name: '1 vs 4', target: 8, bots: 4,
+                title: '1 vs 4 Players',
+                desc: 'You against 4 bots. Everyone plays everyone. First to 8 round wins takes a match.'
+            },
+            3: {
+                name: 'Team League', target: 10, bots: 8,
+                title: '2-Player Team League',
+                desc: 'Two players share this phone as one team. Each plays 8 different bots, first to 10 round wins per match. The team with the most points wins.'
+            }
+        };
+
+        const BOT_NAMES = ['Rex', 'Nova', 'Blaze', 'Echo', 'Zed', 'Pixel', 'Turbo', 'Vega'];
+
+        // ---------- board logic ----------
+
+        function checkWinner(b) {
+            for (let i = 0; i < winningLines.length; i++) {
+                const line = winningLines[i];
+                const a = line[0], m = line[1], c = line[2];
+                if (b[a] && b[a] === b[m] && b[a] === b[c]) {
+                    return { winner: b[a], line: line };
+                }
+            }
+            if (b.every(function (v) { return v !== null; })) {
+                return { winner: 'draw', line: [] };
+            }
+            return null;
+        }
+
+        function emptyCells(b) {
+            const out = [];
+            for (let i = 0; i < 9; i++) if (b[i] === null) out.push(i);
+            return out;
+        }
+
+        // ---------- computer opponent ----------
+
+        function findWinningMove(b, p) {
+            const empties = emptyCells(b);
+            for (let k = 0; k < empties.length; k++) {
+                const i = empties[k];
+                b[i] = p;
+                const r = checkWinner(b);
+                b[i] = null;
+                if (r && r.winner === p) return i;
+            }
+            return null;
+        }
+
+        const minimaxMemo = {};
+
+        // Score of the position for player `me`, with `turn` to move. Faster wins score higher.
+        function minimaxScore(b, turn, me) {
+            const r = checkWinner(b);
+            const filled = 9 - emptyCells(b).length;
+            if (r) {
+                if (r.winner === 'draw') return 0;
+                return r.winner === me ? 10 - filled : filled - 10;
+            }
+            const key = b.map(function (v) { return v || '-'; }).join('') + turn + me;
+            if (minimaxMemo[key] !== undefined) return minimaxMemo[key];
+            const next = other(turn);
+            let best = turn === me ? -Infinity : Infinity;
+            for (let i = 0; i < 9; i++) {
+                if (b[i] !== null) continue;
+                b[i] = turn;
+                const s = minimaxScore(b, next, me);
+                b[i] = null;
+                best = turn === me ? Math.max(best, s) : Math.min(best, s);
+            }
+            minimaxMemo[key] = best;
+            return best;
+        }
+
+        function bestMinimaxMove(b, me) {
+            const opp = other(me);
+            let bestScore = -Infinity;
+            let moves = [];
+            emptyCells(b).forEach(function (i) {
+                b[i] = me;
+                const s = minimaxScore(b, opp, me);
+                b[i] = null;
+                if (s > bestScore) { bestScore = s; moves = [i]; }
+                else if (s === bestScore) moves.push(i);
+            });
+            return randomOf(moves);
+        }
+
+        // level: 'easy' = random, 'medium' = wins/blocks/takes centre, 'hard' = unbeatable (minimax)
+        function aiPick(b, me, level) {
+            const empties = emptyCells(b);
+            if (level === 'easy') return randomOf(empties);
+
+            if (level === 'medium') {
+                let m = findWinningMove(b, me);
+                if (m !== null) return m;
+                m = findWinningMove(b, other(me));
+                if (m !== null) return m;
+                if (b[4] === null) return 4;
+                const corners = [0, 2, 6, 8].filter(function (i) { return b[i] === null; });
+                if (corners.length && Math.random() < 0.5) return randomOf(corners);
+                return randomOf(empties);
+            }
+
+            return bestMinimaxMove(b, me);
+        }
+
+        // ---------- game state ----------
+
+        let matchTarget = 5;           // the target you set with the − / + buttons
+        let mode = 'free';             // 'free' (2 players) | 'computer' | 'tournament'
+        let players = { X: 'Player X', O: 'Player O' };
+        let scoreNames = { X: 'X', O: 'O' };
+        let aiLevel = 'medium';        // strength of the computer / current tournament bot
+        let maxRounds = Infinity;      // safety cap for tournament matches
+        let aiDelay = 450;             // thinking time (ms) before the computer moves
+
+        let board = Array(9).fill(null);
+        let currentPlayer = 'X';
+        let roundStarter = 'X';
+        let gameActive = true;
+        let thinking = false;
+        let aiTimer = null;
+        let roundsPlayed = 0;
+        let matchOver = false;
+        let scores = { X: 0, O: 0, draws: 0 };
+
+        let T = store.get('ttt-tournament', null);   // current / last tournament
+        if (T && (!T.participants || !T.fixtures)) T = null;
+
+        function effectiveTarget() {
+            return (mode === 'tournament' && T) ? T.target : matchTarget;
+        }
+
+        function isAI(p) {
+            return (mode === 'computer' || mode === 'tournament') && p === 'O';
+        }
+
+        function isYou(p) {
+            return players[p] === 'You';
+        }
+
+        function cancelAI() {
+            clearTimeout(aiTimer);
+            thinking = false;
+        }
+
+        // ---------- display ----------
+
+        function updateStatus(text) {
+            statusEl.textContent = text;
+        }
+
+        function updateTurnStatus() {
+            if (!gameActive) return;
+            if (isAI(currentPlayer)) {
+                updateStatus(players.O + ' is thinking…');
+            } else if (isYou(currentPlayer)) {
+                updateStatus('Your turn');
+            } else {
+                updateStatus(players[currentPlayer] + "'s turn");
+            }
+        }
+
+        function updateScoreDisplay() {
+            scoreEl.textContent = scoreNames.X + ': ' + scores.X + ' | ' + scoreNames.O + ': ' + scores.O + ' | Draws: ' + scores.draws;
+        }
+
+        function updateTargetDisplay() {
+            targetValueEl.textContent = matchTarget;
+        }
+
+        function humanProgress(t) {
+            const hf = t.fixtures.filter(function (fx) {
+                return partOf(t, fx.a).human || partOf(t, fx.b).human;
+            });
+            return { done: hf.filter(function (fx) { return fx.done; }).length, total: hf.length };
+        }
+
+        function updateModeUI() {
+            const inT = mode === 'tournament' && !!T;
+            targetControl.classList.toggle('hidden', inT);
+            matchInfo.classList.toggle('hidden', !inT);
+
+            if (mode === 'free') {
+                modeLabel.textContent = '👥 2 Players · same phone';
+            } else if (mode === 'computer') {
+                modeLabel.textContent = '🤖 vs Computer · ' + LEVELS[aiLevel].icon + ' ' + LEVELS[aiLevel].label;
+            } else if (inT) {
+                modeLabel.textContent = '🔥 ' + FORMATS[T.format].name + ' · ' + players.X + ' vs ' + players.O;
+                const p = humanProgress(T);
+                const matchNo = Math.min(p.done + (matchOver ? 0 : 1), p.total);
+                const roundNo = matchOver ? roundsPlayed : Math.min(roundsPlayed + 1, maxRounds);
+                matchInfo.textContent = 'Match ' + matchNo + ' of ' + p.total + ' · first to ' + T.target +
+                    ' · round ' + roundNo + ' of max ' + maxRounds;
+            }
+        }
+
+        function refreshUI() {
+            updateModeUI();
+            updateScoreDisplay();
+        }
+
+        // ---------- playing a round ----------
+
+        function clearBoardDisplay() {
+            cells.forEach(function (cell) {
+                cell.textContent = '';
+                cell.classList.remove('x', 'o', 'winner');
+            });
+        }
+
+        function maybeComputerMove() {
+            if (!gameActive || !isAI(currentPlayer)) return;
+            thinking = true;
+            updateStatus(players.O + ' is thinking…');
+            clearTimeout(aiTimer);
+            aiTimer = setTimeout(function () {
+                thinking = false;
+                if (!gameActive || !isAI(currentPlayer)) return;
+                placeMove(aiPick(board, 'O', aiLevel));
+            }, aiDelay === 0 ? 0 : aiDelay + Math.random() * 350);
+        }
+
+        function placeMove(index) {
+            const p = currentPlayer;
+            board[index] = p;
+            cells[index].textContent = p;
+            cells[index].classList.add(p.toLowerCase());
+
+            const result = checkWinner(board);
+            if (result) {
+                endRound(result);
+                return;
+            }
+
+            currentPlayer = other(p);
+            updateTurnStatus();
+            maybeComputerMove();
+        }
+
+        function endRound(result) {
+            gameActive = false;
+            roundsPlayed++;
+            let msg;
+
+            if (result.winner === 'draw') {
+                scores.draws++;
+                msg = "It's a draw!";
+            } else {
+                scores[result.winner]++;
+                result.line.forEach(function (i) { cells[i].classList.add('winner'); });
+                msg = isYou(result.winner) ? 'You win the round!' : players[result.winner] + ' wins the round!';
+            }
+
+            if (mode !== 'free') roundStarter = other(roundStarter);   // take turns going first
+
+            const target = effectiveTarget();
+            let ended = false;
+            let matchWinner = null;
+
+            if (result.winner !== 'draw' && scores[result.winner] >= target) {
+                ended = true;
+                matchWinner = result.winner;
+            } else if (mode === 'tournament' && roundsPlayed >= maxRounds) {
+                ended = true;
+                matchWinner = scores.X > scores.O ? 'X' : (scores.O > scores.X ? 'O' : null);
+            }
+
+            if (!ended) {
+                updateStatus(msg);
+                refreshUI();
+                return;
+            }
+
+            matchOver = true;
+            resetBtn.textContent = mode === 'tournament' ? 'Continue' : 'New Match';
+
+            if (matchWinner) {
+                updateStatus('🏆 ' + (isYou(matchWinner) ? 'You win' : (mode === 'free' ? 'Player ' + matchWinner : players[matchWinner]) + ' wins') + ' the match!');
+            } else {
+                updateStatus('🤝 The match is drawn!');
+            }
+
+            if (mode === 'tournament') finishTournamentMatch();
+            else recordMatch(matchWinner);
+
+            refreshUI();
+        }
+
+        function handleCellClick(e) {
+            const index = Number(e.currentTarget.dataset.index);
+            if (!gameActive || thinking || board[index] || isAI(currentPlayer)) return;
+            placeMove(index);
+        }
+
+        function resetBoard() {
+            cancelAI();
+            if (matchOver) {
+                scores = { X: 0, O: 0, draws: 0 };
+                roundsPlayed = 0;
+                matchOver = false;
+                roundStarter = 'X';
+                resetBtn.textContent = 'Play Again';
+            }
+            board = Array(9).fill(null);
+            gameActive = true;
+            currentPlayer = roundStarter;
+            clearBoardDisplay();
+            refreshUI();
+            updateTurnStatus();
+            maybeComputerMove();
+        }
+
+        function freshMatch() {
+            cancelAI();
+            scores = { X: 0, O: 0, draws: 0 };
+            roundsPlayed = 0;
+            matchOver = false;
+            roundStarter = 'X';
+            resetBtn.textContent = 'Play Again';
+            board = Array(9).fill(null);
+            gameActive = true;
+            currentPlayer = 'X';
+            clearBoardDisplay();
+            refreshUI();
+            updateTurnStatus();
+        }
+
+        // Start a new match in a given mode. Returns false if the player cancels.
+        function beginMatch(cfg) {
+            const losingProgress = mode === 'tournament' && !matchOver &&
+                (roundsPlayed > 0 || board.some(function (v) { return v !== null; }));
+            if (losingProgress && !window.confirm('Leave this tournament match? Your progress in this match will be lost (the tournament standings are kept).')) {
+                return false;
+            }
+            mode = cfg.mode;
+            players = cfg.players;
+            scoreNames = cfg.scoreNames;
+            if (cfg.level) aiLevel = cfg.level;
+            maxRounds = cfg.maxRounds || Infinity;
+            closePanels();
+            freshMatch();
+            return true;
+        }
+
+        cells.forEach(function (cell) {
+            cell.addEventListener('click', handleCellClick);
+        });
+
+        resetBtn.addEventListener('click', function () {
+            if (mode === 'tournament' && matchOver) {
+                openTournamentPanel('hub');
+                return;
+            }
+            resetBoard();
+        });
+
+        targetMinusBtn.addEventListener('click', function () {
+            matchTarget = Math.max(MIN_TARGET, matchTarget - 1);
+            updateTargetDisplay();
+        });
+
+        targetPlusBtn.addEventListener('click', function () {
+            matchTarget = Math.min(MAX_TARGET, matchTarget + 1);
+            updateTargetDisplay();
+        });
+
+        // ---------- score history (saved on this device) ----------
+
+        function loadHistory() {
+            const list = store.get('ttt-history', []);
+            return Array.isArray(list) ? list : [];
+        }
+
+        function addHistory(entry) {
+            const list = loadHistory();
+            entry.t = Date.now();
+            list.unshift(entry);
+            store.set('ttt-history', list.slice(0, 100));
+        }
+
+        function recordMatch(winner) {
+            const target = effectiveTarget();
+            if (mode === 'computer') {
+                addHistory({
+                    kind: 'computer',
+                    title: 'vs Computer (' + LEVELS[aiLevel].label + ')',
+                    detail: 'First to ' + target + ' · You ' + scores.X + ' – ' + scores.O + ' Computer · ' + scores.draws + ' draw(s)',
+                    outcome: winner === 'X' ? 'win' : 'loss',
+                    outcomeText: winner === 'X' ? 'You won' : 'Computer won'
+                });
+            } else {
+                addHistory({
+                    kind: 'free',
+                    title: '2 Players',
+                    detail: 'First to ' + target + ' · X ' + scores.X + ' – ' + scores.O + ' O · ' + scores.draws + ' draw(s)',
+                    outcome: 'info',
+                    outcomeText: winner ? 'Player ' + winner + ' won' : 'Drawn'
+                });
+            }
+        }
+
+        function formatDate(ms) {
+            try {
+                return new Date(ms).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function renderHistory() {
+            const list = loadHistory();
+            historyList.textContent = '';
+
+            let wins = 0, losses = 0, draws = 0;
+            list.forEach(function (e) {
+                if (e.outcome === 'win') wins++;
+                else if (e.outcome === 'loss') losses++;
+                else if (e.outcome === 'draw') draws++;
+            });
+
+            if (!list.length) {
+                historySummary.textContent = 'Finished matches on this phone show up here.';
+                historyList.appendChild(el('li', { class: 'empty-msg', text: 'No matches yet. Finish a match and it will be saved here.' }));
+                return;
+            }
+
+            historySummary.textContent = list.length + ' saved · vs computer & tournaments: ' +
+                wins + ' won, ' + losses + ' lost, ' + draws + ' drawn';
+
+            list.forEach(function (e) {
+                historyList.appendChild(el('li', { class: 'hist-item' }, [
+                    el('div', { class: 'hist-top' }, [
+                        el('span', { class: 'hist-title', text: e.title }),
+                        el('span', { class: 'badge badge-' + e.outcome, text: e.outcomeText })
+                    ]),
+                    el('div', { class: 'hist-detail', text: e.detail }),
+                    el('div', { class: 'hist-date', text: formatDate(e.t) })
+                ]));
+            });
+        }
+
+        document.getElementById('history-clear').addEventListener('click', function () {
+            if (window.confirm('Delete all saved score history on this phone?')) {
+                store.remove('ttt-history');
+                renderHistory();
+            }
+        });
+
+        // ---------- tournaments (offline, against computer bots) ----------
+
+        function partOf(t, id) {
+            for (let i = 0; i < t.participants.length; i++) {
+                if (t.participants[i].id === id) return t.participants[i];
+            }
+            return null;
+        }
+
+        function makeParticipant(id, name, human, team, level) {
+            return { id: id, name: name, human: human, team: team, level: level || null,
+                     pts: 0, played: 0, won: 0, drawn: 0, lost: 0 };
+        }
+
+        function makeFixture(a, b) {
+            return { a: a, b: b, done: false, winner: null, sa: 0, sb: 0, d: 0 };
+        }
+
+        // How strong each bot is, based on the level chosen for the tournament.
+        function botLevelFor(i, chosen) {
+            if (chosen === 'hard') return i % 2 === 0 ? 'hard' : 'medium';
+            if (chosen === 'medium') return i % 2 === 0 ? 'medium' : 'easy';
+            return 'easy';
+        }
+
+        function simulateRound(levelX, levelO, starter) {
+            const b = Array(9).fill(null);
+            let turn = starter;
+            while (true) {
+                const i = aiPick(b, turn, turn === 'X' ? levelX : levelO);
+                b[i] = turn;
+                const r = checkWinner(b);
+                if (r) return r.winner;
+                turn = other(turn);
+            }
+        }
+
+        // Bot-vs-bot matches are played instantly in the background.
+        function simulateMatch(levelA, levelB, target) {
+            let a = 0, b = 0, d = 0, rounds = 0, starter = 'X';
+            const cap = target * 2;
+            while (rounds < cap && a < target && b < target) {
+                const w = simulateRound(levelA, levelB, starter);
+                rounds++;
+                if (w === 'X') a++;
+                else if (w === 'O') b++;
+                else d++;
+                starter = other(starter);
+            }
+            return { a: a, b: b, d: d };
+        }
+
+        function applyResult(t, fx, sa, sb, d) {
+            const A = partOf(t, fx.a);
+            const B = partOf(t, fx.b);
+            A.pts += sa * WIN_POINTS + d * DRAW_POINTS;
+            B.pts += sb * WIN_POINTS + d * DRAW_POINTS;
+            A.played++;
+            B.played++;
+            if (sa > sb) { A.won++; B.lost++; fx.winner = fx.a; }
+            else if (sb > sa) { B.won++; A.lost++; fx.winner = fx.b; }
+            else { A.drawn++; B.drawn++; fx.winner = null; }
+            fx.done = true;
+            fx.sa = sa;
+            fx.sb = sb;
+            fx.d = d;
+        }
+
+        function createTournament(format, level) {
+            const f = FORMATS[format];
+            const parts = [];
+            if (format === 3) {
+                parts.push(makeParticipant('p1', 'Player 1', true, 'H'));
+                parts.push(makeParticipant('p2', 'Player 2', true, 'H'));
+            } else {
+                parts.push(makeParticipant('p1', 'You', true, 'H'));
+            }
+            for (let i = 0; i < f.bots; i++) {
+                parts.push(makeParticipant('b' + i, BOT_NAMES[i], false, 'B', botLevelFor(i, level)));
+            }
+
+            const fixtures = [];
+            if (format === 3) {
+                for (let i = 0; i < f.bots; i++) {
+                    fixtures.push(makeFixture('p1', 'b' + i));
+                    fixtures.push(makeFixture('p2', 'b' + i));
+                }
+            } else {
+                for (let i = 0; i < parts.length; i++) {
+                    for (let j = i + 1; j < parts.length; j++) {
+                        fixtures.push(makeFixture(parts[i].id, parts[j].id));
+                    }
+                }
+            }
+
+            const t = {
+                format: format, level: level, target: f.target,
+                participants: parts, fixtures: fixtures,
+                current: null, finished: false, lastNote: '', summary: null
+            };
+
+            t.fixtures.forEach(function (fx) {
+                const a = partOf(t, fx.a);
+                const b = partOf(t, fx.b);
+                if (!a.human && !b.human) {
+                    const r = simulateMatch(a.level, b.level, t.target);
+                    applyResult(t, fx, r.a, r.b, r.d);
+                }
+            });
+            return t;
+        }
+
+        // Ranking: most points first; ties broken by total matches won.
+        function sortedParts(t) {
+            return t.participants.slice().sort(function (x, y) {
+                return (y.pts - x.pts) || (y.won - x.won);
+            });
+        }
+
+        function teamTotals(t) {
+            const tot = { H: { pts: 0, won: 0 }, B: { pts: 0, won: 0 } };
+            t.participants.forEach(function (p) {
+                tot[p.team].pts += p.pts;
+                tot[p.team].won += p.won;
+            });
+            return tot;
+        }
+
+        function finalizeTournament() {
+            T.finished = true;
+            let outcome, text;
+
+            if (T.format === 3) {
+                const tt = teamTotals(T);
+                if (tt.H.pts > tt.B.pts || (tt.H.pts === tt.B.pts && tt.H.won > tt.B.won)) {
+                    outcome = 'win';
+                    text = '🏆 Your team wins! ' + tt.H.pts + ' pts vs the bots’ ' + tt.B.pts + ' pts';
+                } else if (tt.H.pts === tt.B.pts && tt.H.won === tt.B.won) {
+                    outcome = 'draw';
+                    text = '🤝 The league is a tie: ' + tt.H.pts + ' pts each, ' + tt.H.won + ' match wins each';
+                } else {
+                    outcome = 'loss';
+                    text = 'The bots win the league, ' + tt.B.pts + ' pts to your team’s ' + tt.H.pts;
+                }
+            } else {
+                const ranked = sortedParts(T);
+                let rank = 1;
+                for (let i = 0; i < ranked.length; i++) {
+                    if (ranked[i].human) { rank = i + 1; break; }
+                }
+                const me = partOf(T, 'p1');
+                if (rank === 1) {
+                    outcome = 'win';
+                    text = '🏆 You won the tournament with ' + me.pts + ' pts!';
+                } else {
+                    outcome = 'loss';
+                    text = 'You finished ' + ordinal(rank) + ' of ' + ranked.length + ' with ' + me.pts + ' pts';
+                }
+            }
+
+            T.summary = { outcome: outcome, text: text };
+            addHistory({
+                kind: 'tournament',
+                title: 'Tournament · ' + FORMATS[T.format].name,
+                detail: text + ' · bots: ' + LEVELS[T.level].label,
+                outcome: outcome,
+                outcomeText: outcome === 'win' ? 'Won' : (outcome === 'loss' ? 'Lost' : 'Drawn')
+            });
+        }
+
+        // Called when a tournament match you are playing on the board is over.
+        function finishTournamentMatch() {
+            if (!T || T.current === null || T.current === undefined) return;
+            const fx = T.fixtures[T.current];
+            const a = partOf(T, fx.a);
+            const b = partOf(T, fx.b);
+            const ptsA = scores.X * WIN_POINTS + scores.draws * DRAW_POINTS;
+            const ptsB = scores.O * WIN_POINTS + scores.draws * DRAW_POINTS;
+
+            applyResult(T, fx, scores.X, scores.O, scores.draws);
+            T.lastNote = a.name + ' ' + scores.X + ' – ' + scores.O + ' ' + b.name +
+                ' (' + scores.draws + ' draw' + (scores.draws === 1 ? '' : 's') + ') · ' +
+                a.name + ' +' + ptsA + ' pts, ' + b.name + ' +' + ptsB + ' pts';
+            T.current = null;
+
+            if (T.fixtures.every(function (f) { return f.done; })) {
+                finalizeTournament();
+                resetBtn.textContent = 'See Results';
+            }
+            store.set('ttt-tournament', T);
+
+            setTimeout(function () {
+                if (mode === 'tournament' && matchOver) openTournamentPanel('hub');
+            }, 1700);
+        }
+
+        // Leave tournament play and return to the plain 2-player board (nothing left to lose).
+        function backToFreeMode() {
+            matchOver = true;
+            beginMatch({
+                mode: 'free',
+                players: { X: 'Player X', O: 'Player O' },
+                scoreNames: { X: 'X', O: 'O' }
+            });
+        }
+
+        function startTournament(format, level) {
+            if (T && !T.finished &&
+                !window.confirm('Start a new tournament? Your current one (still unfinished) will be lost.')) {
+                return;
+            }
+            T = createTournament(format, level);
+            store.set('ttt-tournament', T);
+            if (mode === 'tournament') backToFreeMode();
+            renderTournament('hub');
+            openPanel(tournamentPanel);
+        }
+
+        function playNextMatch() {
+            if (!T) return;
+            let idx = -1;
+            for (let i = 0; i < T.fixtures.length; i++) {
+                if (!T.fixtures[i].done) { idx = i; break; }
+            }
+            if (idx < 0) return;
+
+            const fx = T.fixtures[idx];
+            const human = partOf(T, fx.a);
+            const bot = partOf(T, fx.b);
+            const previous = T.current;
+            T.current = idx;
+
+            const started = beginMatch({
+                mode: 'tournament',
+                level: bot.level,
+                players: { X: human.name, O: bot.name },
+                scoreNames: { X: human.name, O: bot.name },
+                maxRounds: T.target * 2
+            });
+            if (!started) T.current = previous;
+        }
+
+        function abandonTournament() {
+            if (!window.confirm('Abandon this tournament? Its standings will be deleted.')) return;
+            T = null;
+            store.remove('ttt-tournament');
+            if (mode === 'tournament') backToFreeMode();
+            renderTournament('setup');
+            openPanel(tournamentPanel);
+        }
+
+        // --- tournament screens ---
+
+        let setupLevel = 'medium';
+
+        function standingsTable(t) {
+            const table = el('table', { class: 'standings' });
+            table.appendChild(el('tr', {}, [
+                el('th', { text: '#' }), el('th', { text: 'Name' }), el('th', { text: 'P' }),
+                el('th', { text: 'W' }), el('th', { text: 'Pts' })
+            ]));
+            sortedParts(t).forEach(function (p, i) {
+                const label = p.human ? p.name : p.name + ' ' + LEVELS[p.level].icon;
+                table.appendChild(el('tr', { class: p.human ? 'me' : '' }, [
+                    el('td', { text: String(i + 1) }), el('td', { text: label }),
+                    el('td', { text: String(p.played) }), el('td', { text: String(p.won) }),
+                    el('td', { text: String(p.pts) })
+                ]));
+            });
+            return table;
+        }
+
+        function renderSetup(c) {
+            c.appendChild(el('h2', { text: '🔥 Tournament' }));
+            c.appendChild(el('p', { class: 'panel-sub', text: 'Offline tournaments against computer bots. Win a round = 5 pts, draw = 2 pts each.' }));
+
+            c.appendChild(el('p', { class: 'panel-label', text: 'Bot strength' }));
+            const chips = el('div', { class: 'chips' });
+            ['easy', 'medium', 'hard'].forEach(function (lv) {
+                chips.appendChild(el('button', {
+                    class: 'chip' + (setupLevel === lv ? ' selected' : ''),
+                    text: LEVELS[lv].icon + ' ' + LEVELS[lv].label,
+                    onclick: function () { setupLevel = lv; renderTournament('setup'); }
+                }));
+            });
+            c.appendChild(chips);
+
+            c.appendChild(el('p', { class: 'panel-label', text: 'Choose a format' }));
+            [1, 2, 3].forEach(function (n) {
+                c.appendChild(el('button', {
+                    class: 'choice',
+                    onclick: function () { startTournament(n, setupLevel); }
+                }, [
+                    el('span', { class: 'choice-title', text: FORMATS[n].title + ' · first to ' + FORMATS[n].target }),
+                    el('span', { class: 'choice-desc', text: FORMATS[n].desc })
+                ]));
+            });
+
+            if (T && T.finished) {
+                c.appendChild(el('button', {
+                    class: 'panel-btn',
+                    text: 'View last results',
+                    onclick: function () { renderTournament('hub'); }
+                }));
+            }
+        }
+
+        function renderHub(c) {
+            const f = FORMATS[T.format];
+            const p = humanProgress(T);
+            c.appendChild(el('h2', { text: '🔥 ' + f.title }));
+            c.appendChild(el('p', {
+                class: 'panel-sub',
+                text: 'Bots: ' + LEVELS[T.level].icon + ' ' + LEVELS[T.level].label +
+                      ' · ' + p.done + ' of ' + p.total + ' of your matches played'
+            }));
+
+            if (T.finished && T.summary) {
+                c.appendChild(el('div', { class: 'banner', text: T.summary.text }));
+            }
+
+            if (T.format === 3) {
+                const tt = teamTotals(T);
+                c.appendChild(el('div', { class: 'note-box' }, [
+                    el('strong', { text: 'Team score' }),
+                    'Your team: ' + tt.H.pts + ' pts (' + tt.H.won + ' match wins)  ·  Bots: ' + tt.B.pts + ' pts (' + tt.B.won + ' match wins)'
+                ]));
+            }
+
+            if (T.lastNote) {
+                c.appendChild(el('div', { class: 'note-box' }, [
+                    el('strong', { text: 'Last match' }), T.lastNote
+                ]));
+            }
+
+            c.appendChild(standingsTable(T));
+
+            if (!T.finished) {
+                let idx = -1;
+                for (let i = 0; i < T.fixtures.length; i++) {
+                    if (!T.fixtures[i].done) { idx = i; break; }
+                }
+                const fx = T.fixtures[idx];
+                const human = partOf(T, fx.a);
+                const bot = partOf(T, fx.b);
+                const inProgress = mode === 'tournament' && !matchOver && T.current === idx;
+
+                c.appendChild(el('div', { class: 'note-box' }, [
+                    el('strong', { text: 'Next match' }),
+                    human.name + ' vs ' + bot.name + ' ' + LEVELS[bot.level].icon + ' · first to ' + T.target +
+                    (T.format === 3 ? ' — pass the phone to ' + human.name + '!' : '')
+                ]));
+                c.appendChild(el('button', {
+                    class: 'panel-btn fire',
+                    text: inProgress ? '↻ Restart this match' : '▶ Play match',
+                    onclick: playNextMatch
+                }));
+                c.appendChild(el('button', { class: 'panel-btn danger', text: 'Abandon tournament', onclick: abandonTournament }));
+            } else {
+                c.appendChild(el('button', {
+                    class: 'panel-btn primary',
+                    text: 'New tournament',
+                    onclick: function () { renderTournament('setup'); }
+                }));
+            }
+        }
+
+        function renderTournament(view) {
+            tournamentBody.textContent = '';
+            if (view === 'hub' && T) renderHub(tournamentBody);
+            else renderSetup(tournamentBody);
+        }
+
+        function openTournamentPanel(view) {
+            const v = view || ((T && !T.finished) ? 'hub' : 'setup');
+            renderTournament(v);
+            openPanel(tournamentPanel);
+        }
+
+        // ---------- menu buttons ----------
+
+        document.getElementById('menu-vs-computer').addEventListener('click', function () {
+            openPanel(computerPanel);
+        });
+
+        document.querySelectorAll('#computer-panel .choice').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                beginMatch({
+                    mode: 'computer',
+                    level: btn.dataset.level,
+                    players: { X: 'You', O: 'Computer' },
+                    scoreNames: { X: 'You (X)', O: 'Computer (O)' }
+                });
+            });
+        });
+
+        document.getElementById('menu-two-player').addEventListener('click', function () {
+            closeMenu();
+            if (mode === 'free') return;
+            beginMatch({
+                mode: 'free',
+                players: { X: 'Player X', O: 'Player O' },
+                scoreNames: { X: 'X', O: 'O' }
+            });
+        });
+
+        document.getElementById('menu-score-history').addEventListener('click', function () {
+            renderHistory();
+            openPanel(historyPanel);
+        });
+
+        document.getElementById('menu-tournament').addEventListener('click', function () {
+            openTournamentPanel();
+        });
+
+        // ---------- start ----------
+
+        updateTargetDisplay();
+        freshMatch();
+    </script>
+</body>
+</html>
