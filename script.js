@@ -42,6 +42,53 @@ if (backToTop) {
   });
 }
 
+// Contact form: sent to my email through FormSubmit (no server needed)
+const contactForm = document.getElementById('contact-form');
+if (contactForm && window.fetch) {
+  const sendBtn = document.getElementById('cf-send');
+  const statusEl = document.getElementById('cf-status');
+
+  function showStatus(text, kind) {
+    statusEl.className = kind;
+    statusEl.textContent = text;
+  }
+
+  contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = new FormData(contactForm);
+    if (data.get('_honey')) return; // only spam bots fill the hidden field
+
+    const payload = {};
+    data.forEach((value, key) => { payload[key] = value; });
+
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending…';
+    showStatus('', '');
+
+    fetch('https://formsubmit.co/ajax/danieloluwabiyi84@gmail.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then((res) => res.json().then((json) => ({ ok: res.ok, json })))
+      .then((result) => {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send message';
+        if (result.ok && (result.json.success === true || result.json.success === 'true')) {
+          contactForm.reset();
+          showStatus('Thank you! Your message was sent.', 'ok');
+        } else {
+          showStatus('Sorry, that did not send. Please use the email or WhatsApp icons above.', 'err');
+        }
+      })
+      .catch(() => {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send message';
+        showStatus('Sorry, that did not send. Please use the email or WhatsApp icons above.', 'err');
+      });
+  });
+}
+
 // Scroll reveal + animated skill bars
 const revealEls = document.querySelectorAll('.reveal');
 if (revealEls.length) {
