@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Checkout Page - Daniel Oluwabiyi Oluwatunmise</title>
+    <meta name="description" content="A demo checkout page with card number formatting, card type detection and a fake payment button. No real payments are processed.">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <style>
+        .back-link {
+            display: inline-block;
+            margin-bottom: 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #6d28d9;
+            text-decoration: none;
+        }
+
+        .demo-banner {
+            margin: 0 0 14px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: #ede9fe;
+            color: #5b21b6;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 40px 16px;
+            background: #f3f4f6;
+            font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #1f2937;
+        }
+
+        .checkout-wrapper {
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 24px 20px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            margin: 0 0 16px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .item-name {
+            font-weight: 600;
+            margin: 0 0 4px;
+        }
+
+        .item-desc {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .item-price {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #4b5563;
+            padding: 4px 0;
+        }
+
+        .summary-row.total {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #111827;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 8px;
+            padding-top: 10px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        input {
+            width: 100%;
+            margin-top: 6px;
+            padding: 11px 12px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            color: #111827;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .card-number-wrap {
+            position: relative;
+        }
+
+        .card-type-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(calc(-50% + 3px));
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #2563eb;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .form-row label {
+            flex: 1;
+        }
+
+        #pay-btn {
+            width: 100%;
+            padding: 13px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        #pay-btn:hover {
+            background: #1d4ed8;
+        }
+
+        #pay-btn.success {
+            background: #16a34a;
+        }
+
+        #pay-btn:disabled {
+            cursor: default;
+        }
+
+        .secure-note {
+            text-align: center;
+            font-size: 0.78rem;
+            color: #9ca3af;
+            margin: 14px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-wrapper">
+
+        <a class="back-link" href="index.html#projects">← Back to my portfolio</a>
+        <p class="demo-banner">Demo page from my portfolio. No real payments are made.</p>
+
+        <div class="card">
+            <h2>Order Summary</h2>
+            <div class="order-item">
+                <div>
+                    <p class="item-name">Product / Plan Name</p>
+                    <p class="item-desc">Short description of what's being purchased</p>
+                </div>
+                <p class="item-price">$49.00</p>
+            </div>
+            <div class="summary-row"><span>Subtotal</span><span>$49.00</span></div>
+            <div class="summary-row"><span>Tax</span><span>$3.92</span></div>
+            <div class="summary-row total"><span>Total</span><span id="total-amount">$52.92</span></div>
+        </div>
+
+        <div class="card">
+            <h2>Payment Details</h2>
+            <form id="payment-form">
+                <label>Cardholder Name
+                    <input type="text" id="card-name" placeholder="Jane Doe" autocomplete="cc-name" required>
+                </label>
+
+                <label>Card Number
+                    <div class="card-number-wrap">
+                        <input type="text" id="card-number" placeholder="1234 5678 9012 3456" inputmode="numeric" autocomplete="cc-number" maxlength="19" required>
+                        <span id="card-type-icon" class="card-type-icon"></span>
+                    </div>
+                </label>
+
+                <div class="form-row">
+                    <label>Expiry
+                        <input type="text" id="card-expiry" placeholder="MM/YY" inputmode="numeric" autocomplete="cc-exp" maxlength="5" required>
+                    </label>
+                    <label>CVV
+                        <input type="text" id="card-cvv" placeholder="123" inputmode="numeric" autocomplete="cc-csc" maxlength="4" required>
+                    </label>
+                </div>
+
+                <label>Email for receipt
+                    <input type="email" id="card-email" placeholder="you@example.com" autocomplete="email" required>
+                </label>
+
+                <button type="submit" id="pay-btn">Pay $52.92</button>
+
+                <p class="secure-note">🔒 Demo form only — no real payment is processed, and nothing you type leaves this page.</p>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        const cardNumberInput = document.getElementById('card-number');
+        const cardTypeIcon = document.getElementById('card-type-icon');
+        const cardExpiryInput = document.getElementById('card-expiry');
+        const cardCvvInput = document.getElementById('card-cvv');
+        const form = document.getElementById('payment-form');
+        const payBtn = document.getElementById('pay-btn');
+
+        function detectCardType(digits) {
+            if (/^4/.test(digits)) return 'VISA';
+            if (/^5[1-5]/.test(digits)) return 'MASTERCARD';
+            if (/^3[47]/.test(digits)) return 'AMEX';
+            if (/^6(?:011|5)/.test(digits)) return 'DISCOVER';
+            return '';
+        }
+
+        cardNumberInput.addEventListener('input', (e) => {
+            const digits = e.target.value.replace(/\D/g, '').slice(0, 16);
+            e.target.value = digits.replace(/(.{4})/g, '$1 ').trim();
+            cardTypeIcon.textContent = detectCardType(digits);
+        });
+
+        cardExpiryInput.addEventListener('input', (e) => {
+            const digits = e.target.value.replace(/\D/g, '').slice(0, 4);
+            e.target.value = digits.length >= 3
+                ? digits.slice(0, 2) + '/' + digits.slice(2)
+                : digits;
+        });
+
+        cardCvvInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            payBtn.disabled = true;
+            payBtn.textContent = 'Processing...';
+            setTimeout(() => {
+                payBtn.textContent = '✓ Payment Successful (Demo)';
+                payBtn.classList.add('success');
+            }, 1200);
+        });
+    </script>
+    <script src="visitors.js?v=3" defer></script>
+</body>
+</html>
