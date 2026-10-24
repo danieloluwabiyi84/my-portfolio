@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electronics Tools - Daniel Oluwabiyi Oluwatunmise</title>
+    <meta name="description" content="Free electronics tools: an Ohm's law calculator, a resistor colour code decoder and a series/parallel resistor calculator, built with HTML, CSS and JavaScript.">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        .tool-card {
+            max-width: var(--max-width);
+            margin: 0 auto 20px;
+            padding: 20px 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 0 24px rgba(168, 85, 247, 0.08);
+        }
+
+        .tool-card .hint {
+            margin: 0 0 16px;
+            font-size: 0.9rem;
+            max-width: none;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .field-row.two {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (max-width: 520px) {
+            .field-row,
+            .field-row.two {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tool-card label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .tool-card input,
+        .tool-card select,
+        .tool-card textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            font: inherit;
+            font-size: 1rem;
+        }
+
+        .tool-card input:focus,
+        .tool-card select:focus,
+        .tool-card textarea:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 1px;
+        }
+
+        .tool-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 999px;
+            border: 1px solid var(--accent);
+            background: var(--accent);
+            color: #fff;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn.secondary {
+            background: transparent;
+            color: var(--accent-bright);
+            border-color: var(--border);
+        }
+
+        .result {
+            margin-top: 16px;
+            padding: 12px 14px;
+            background: var(--card-dark);
+            border-radius: 8px;
+            font-variant-numeric: tabular-nums;
+            min-height: 2.6em;
+            color: var(--text);
+        }
+
+        .result .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 3px 0;
+        }
+
+        .result .row.found {
+            color: var(--accent-bright);
+            font-weight: 700;
+        }
+
+        .result .error {
+            color: #f87171;
+        }
+
+        .result .muted {
+            color: var(--muted);
+        }
+
+        .band-toggle {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .band-toggle .btn {
+            padding: 7px 16px;
+            font-size: 0.9rem;
+        }
+
+        .band-toggle .btn:not(.on) {
+            background: transparent;
+            color: var(--accent-bright);
+            border-color: var(--border);
+        }
+
+        #resistor-svg {
+            display: block;
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            margin: 0 auto 16px;
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .band-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .band-grid .hidden {
+            display: none;
+        }
+
+        .big-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-bright);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <button id="theme-toggle" onclick="toggleTheme()">☀ Light mode</button>
+
+    <nav class="site-nav">
+        <div class="nav-row">
+            <a href="index.html#education" class="nav-link">Education</a>
+            <span class="nav-sep">|</span>
+            <a href="index.html#skills" class="nav-link">Skills</a>
+            <span class="nav-sep">|</span>
+            <a href="index.html#projects" class="nav-link">Projects</a>
+        </div>
+        <div class="nav-row">
+            <a href="my-hobbies.html" class="nav-link">Hobbies</a>
+            <span class="nav-sep">|</span>
+            <a href="index.html#contact" class="nav-link">Contact</a>
+        </div>
+    </nav>
+
+    <h1>⚡ Electronics Tools</h1>
+    <p style="text-align:center">Three small calculators for electrical and electronic engineering students. You can type values with prefixes, like <strong>4.7k</strong>, <strong>10m</strong> or <strong>4k7</strong>.</p>
+
+    <!-- ===================== Ohm's law ===================== -->
+    <h3>Ohm's Law Calculator</h3>
+    <div class="tool-card">
+        <p class="hint">Fill in any <strong>two</strong> values and leave the third empty. The calculator finds it and also gives the power.</p>
+        <div class="field-row">
+            <div>
+                <label for="ohm-v">Voltage (V)</label>
+                <input id="ohm-v" type="text" inputmode="text" autocomplete="off" placeholder="e.g. 5">
+            </div>
+            <div>
+                <label for="ohm-i">Current (A)</label>
+                <input id="ohm-i" type="text" inputmode="text" autocomplete="off" placeholder="e.g. 20m">
+            </div>
+            <div>
+                <label for="ohm-r">Resistance (Ω)</label>
+                <input id="ohm-r" type="text" inputmode="text" autocomplete="off" placeholder="e.g. 220">
+            </div>
+        </div>
+        <div class="tool-actions">
+            <button class="btn" id="ohm-calc">Calculate</button>
+            <button class="btn secondary" id="ohm-clear">Clear</button>
+        </div>
+        <div class="result" id="ohm-result" aria-live="polite"><span class="muted">Result appears here.</span></div>
+    </div>
+
+    <!-- ===================== Resistor colour code ===================== -->
+    <h3>Resistor Colour Code</h3>
+    <div class="tool-card">
+        <p class="hint">Pick the colour of each band, reading from the end with the bands closest together.</p>
+        <div class="band-toggle">
+            <button class="btn on" id="bands-4" type="button">4 bands</button>
+            <button class="btn" id="bands-5" type="button">5 bands</button>
+        </div>
+
+        <svg id="resistor-svg" viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Resistor with coloured bands">
+            <line x1="0" y1="45" x2="60" y2="45" stroke="#9ca3af" stroke-width="5" stroke-linecap="round"/>
+            <line x1="260" y1="45" x2="320" y2="45" stroke="#9ca3af" stroke-width="5" stroke-linecap="round"/>
+            <rect x="55" y="12" width="210" height="66" rx="22" fill="#e8d3a2" stroke="#b79a5b" stroke-width="2"/>
+            <rect id="svg-b1" x="84" y="12" width="14" height="66" fill="#8b4513"/>
+            <rect id="svg-b2" x="112" y="12" width="14" height="66" fill="#111111"/>
+            <rect id="svg-b3" x="140" y="12" width="14" height="66" fill="#e02424"/>
+            <rect id="svg-b4" x="168" y="12" width="14" height="66" fill="#f97316"/>
+            <rect id="svg-b5" x="226" y="12" width="14" height="66" fill="#d4af37"/>
+        </svg>
+
+        <div class="band-grid">
+            <div>
+                <label for="band-1">Band 1 (digit)</label>
+                <select id="band-1"></select>
+            </div>
+            <div>
+                <label for="band-2">Band 2 (digit)</label>
+                <select id="band-2"></select>
+            </div>
+            <div id="band-3-wrap" class="hidden">
+                <label for="band-3">Band 3 (digit)</label>
+                <select id="band-3"></select>
+            </div>
+            <div>
+                <label for="band-mult">Multiplier</label>
+                <select id="band-mult"></select>
+            </div>
+            <div>
+                <label for="band-tol">Tolerance</label>
+                <select id="band-tol"></select>
+            </div>
+        </div>
+        <div class="result" id="color-result" aria-live="polite"></div>
+    </div>
+
+    <!-- ===================== Series / parallel ===================== -->
+    <h3>Series &amp; Parallel Resistors</h3>
+    <div class="tool-card">
+        <p class="hint">Type your resistor values separated by commas or spaces, for example <strong>100, 220, 4.7k</strong>.</p>
+        <label for="sp-list">Resistor values (Ω)</label>
+        <input id="sp-list" type="text" inputmode="text" autocomplete="off" placeholder="100, 220, 4.7k">
+        <div class="tool-actions">
+            <button class="btn" id="sp-calc">Calculate</button>
+            <button class="btn secondary" id="sp-clear">Clear</button>
+        </div>
+        <div class="result" id="sp-result" aria-live="polite"><span class="muted">Result appears here.</span></div>
+    </div>
+
+    <footer>
+        <a href="index.html#projects">← Back to my projects</a>
+    </footer>
+    <footer>Copyright © 2026 Daniel Oluwabiyi Oluwatunmise, all rights reserved.</footer>
+
+    <button id="back-to-top" aria-label="Back to top">↑</button>
+
+    <script src="script.js"></script>
+    <script>
+        // ---------- number helpers ----------
+
+        // Reads values like 12, 4.7k, 10m, 2M, 4k7, 4R7 (blank = null, invalid = NaN)
+        function parseSI(text) {
+            const s = String(text).trim();
+            if (s === '') return null;
+            const mult = { p: 1e-12, n: 1e-9, u: 1e-6, 'µ': 1e-6, m: 1e-3, k: 1e3, K: 1e3, M: 1e6, G: 1e9 };
+
+            // "4k7" / "4R7" style
+            let m = /^(\d+)([pnuµmkKMGR])(\d+)$/.exec(s);
+            if (m) {
+                const factor = m[2] === 'R' ? 1 : mult[m[2]];
+                return Number(m[1] + '.' + m[3]) * factor;
+            }
+
+            m = /^([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)\s*([pnuµmkKMG]?)\s*(?:V|A|Ω|ohm|ohms|R|v|a)?$/.exec(s);
+            if (!m) return NaN;
+            return Number(m[1]) * (m[2] ? mult[m[2]] : 1);
+        }
+
+        // Shows 0.0227 A as "22.73 mA"
+        function fmtSI(value, unit) {
+            if (value === 0) return '0 ' + unit;
+            const prefixes = [[1e9, 'G'], [1e6, 'M'], [1e3, 'k'], [1, ''], [1e-3, 'm'], [1e-6, 'µ'], [1e-9, 'n'], [1e-12, 'p']];
+            const a = Math.abs(value);
+            let idx = prefixes.findIndex(function (p) { return a >= p[0] * 0.99995; });
+            if (idx === -1) idx = prefixes.length - 1;
+            let rounded = Number((value / prefixes[idx][0]).toPrecision(4));
+            if (Math.abs(rounded) >= 1000 && idx > 0) {
+                idx--;
+                rounded = Number((value / prefixes[idx][0]).toPrecision(4));
+            }
+            return rounded + ' ' + prefixes[idx][1] + unit;
+        }
+
+        function row(label, value, found) {
+            const div = document.createElement('div');
+            div.className = 'row' + (found ? ' found' : '');
+            const l = document.createElement('span');
+            l.textContent = label;
+            const v = document.createElement('span');
+            v.textContent = value;
+            div.appendChild(l);
+            div.appendChild(v);
+            return div;
+        }
+
+        function showMessage(box, text, isError) {
+            box.textContent = '';
+            const s = document.createElement('span');
+            s.className = isError ? 'error' : 'muted';
+            s.textContent = text;
+            box.appendChild(s);
+        }
+
+        // ---------- Ohm's law ----------
+
+        const ohmV = document.getElementById('ohm-v');
+        const ohmI = document.getElementById('ohm-i');
+        const ohmR = document.getElementById('ohm-r');
+        const ohmResult = document.getElementById('ohm-result');
+
+        function calcOhm() {
+            let V = parseSI(ohmV.value);
+            let I = parseSI(ohmI.value);
+            let R = parseSI(ohmR.value);
+            const all = [V, I, R];
+
+            if (all.some(function (x) { return Number.isNaN(x); })) {
+                showMessage(ohmResult, "I couldn't read one of the values. Try numbers like 12, 4.7k or 10m.", true);
+                return;
+            }
+            const filled = all.filter(function (x) { return x !== null; }).length;
+            if (filled < 2) { showMessage(ohmResult, 'Fill in any two values.', false); return; }
+            if (filled === 3) { showMessage(ohmResult, 'Leave one field empty so I know what to find.', true); return; }
+
+            let found;
+            if (V === null) { V = I * R; found = 'V'; }
+            else if (I === null) {
+                if (R === 0) { showMessage(ohmResult, "Resistance can't be 0 when finding current.", true); return; }
+                I = V / R; found = 'I';
+            } else {
+                if (I === 0) { showMessage(ohmResult, "Current can't be 0 when finding resistance.", true); return; }
+                R = V / I; found = 'R';
+            }
+            const P = V * I;
+
+            ohmResult.textContent = '';
+            ohmResult.appendChild(row('Voltage', fmtSI(V, 'V'), found === 'V'));
+            ohmResult.appendChild(row('Current', fmtSI(I, 'A'), found === 'I'));
+            ohmResult.appendChild(row('Resistance', fmtSI(R, 'Ω'), found === 'R'));
+            ohmResult.appendChild(row('Power (V × I)', fmtSI(P, 'W'), false));
+        }
+
+        document.getElementById('ohm-calc').addEventListener('click', calcOhm);
+        [ohmV, ohmI, ohmR].forEach(function (inp) {
+            inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') calcOhm(); });
+        });
+        document.getElementById('ohm-clear').addEventListener('click', function () {
+            ohmV.value = ''; ohmI.value = ''; ohmR.value = '';
+            showMessage(ohmResult, 'Result appears here.', false);
+        });
+
+        // ---------- Resistor colour code ----------
+
+        const COLORS = {
+            black:  { hex: '#111111', digit: 0, mult: 1,    tol: null },
+            brown:  { hex: '#8b4513', digit: 1, mult: 10,   tol: 1 },
+            red:    { hex: '#e02424', digit: 2, mult: 100,  tol: 2 },
+            orange: { hex: '#f97316', digit: 3, mult: 1e3,  tol: null },
+            yellow: { hex: '#facc15', digit: 4, mult: 1e4,  tol: null },
+            green:  { hex: '#22c55e', digit: 5, mult: 1e5,  tol: 0.5 },
+            blue:   { hex: '#3b82f6', digit: 6, mult: 1e6,  tol: 0.25 },
+            violet: { hex: '#a855f7', digit: 7, mult: 1e7,  tol: 0.1 },
+            grey:   { hex: '#9ca3af', digit: 8, mult: 1e8,  tol: 0.05 },
+            white:  { hex: '#f5f5f5', digit: 9, mult: 1e9,  tol: null },
+            gold:   { hex: '#d4af37', digit: null, mult: 0.1,  tol: 5 },
+            silver: { hex: '#c0c0c0', digit: null, mult: 0.01, tol: 10 }
+        };
+
+        const bandCount = { n: 4 };
+        const sel = {
+            b1: document.getElementById('band-1'),
+            b2: document.getElementById('band-2'),
+            b3: document.getElementById('band-3'),
+            mult: document.getElementById('band-mult'),
+            tol: document.getElementById('band-tol')
+        };
+        const colorResult = document.getElementById('color-result');
+
+        function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+        function fillSelect(select, names, labelFn, selected) {
+            select.textContent = '';
+            names.forEach(function (name) {
+                const o = document.createElement('option');
+                o.value = name;
+                o.textContent = labelFn(name);
+                if (name === selected) o.selected = true;
+                select.appendChild(o);
+            });
+        }
+
+        const digitColors = Object.keys(COLORS).filter(function (n) { return COLORS[n].digit !== null; });
+        const multColors = Object.keys(COLORS);
+        const tolColors = Object.keys(COLORS).filter(function (n) { return COLORS[n].tol !== null; });
+
+        function fmtMult(m) {
+            if (m >= 1e9) return '×1G';
+            if (m >= 1e6) return '×' + (m / 1e6) + 'M';
+            if (m >= 1e3) return '×' + (m / 1e3) + 'k';
+            return '×' + m;
+        }
+
+        fillSelect(sel.b1, digitColors.filter(function (n) { return n !== 'black'; }), function (n) { return cap(n) + ' (' + COLORS[n].digit + ')'; }, 'brown');
+        fillSelect(sel.b2, digitColors, function (n) { return cap(n) + ' (' + COLORS[n].digit + ')'; }, 'black');
+        fillSelect(sel.b3, digitColors, function (n) { return cap(n) + ' (' + COLORS[n].digit + ')'; }, 'black');
+        fillSelect(sel.mult, multColors, function (n) { return cap(n) + ' (' + fmtMult(COLORS[n].mult) + ')'; }, 'red');
+        fillSelect(sel.tol, tolColors, function (n) { return cap(n) + ' (±' + COLORS[n].tol + '%)'; }, 'gold');
+
+        function updateColorCode() {
+            const five = bandCount.n === 5;
+            const d1 = COLORS[sel.b1.value].digit;
+            const d2 = COLORS[sel.b2.value].digit;
+            const d3 = five ? COLORS[sel.b3.value].digit : null;
+            const base = five ? d1 * 100 + d2 * 10 + d3 : d1 * 10 + d2;
+            const ohms = base * COLORS[sel.mult.value].mult;
+            const tol = COLORS[sel.tol.value].tol;
+
+            // draw the bands (4-band: bands sit at positions 1,2,3 + tolerance; 5-band: 1,2,3,4 + tolerance)
+            const svgIds = ['svg-b1', 'svg-b2', 'svg-b3', 'svg-b4', 'svg-b5'];
+            const picked = five
+                ? [sel.b1.value, sel.b2.value, sel.b3.value, sel.mult.value, sel.tol.value]
+                : [sel.b1.value, sel.b2.value, sel.mult.value, sel.tol.value];
+            const xs = five ? [78, 106, 134, 162, 226] : [88, 124, 160, 226];
+            svgIds.forEach(function (id, i) {
+                const r = document.getElementById(id);
+                if (i < picked.length) {
+                    r.setAttribute('x', xs[i]);
+                    r.setAttribute('fill', COLORS[picked[i]].hex);
+                    r.style.display = '';
+                } else {
+                    r.style.display = 'none';
+                }
+            });
+
+            colorResult.textContent = '';
+            const big = document.createElement('div');
+            big.className = 'big-value';
+            big.textContent = fmtSI(ohms, 'Ω') + '  ±' + tol + '%';
+            colorResult.appendChild(big);
+            const range = document.createElement('div');
+            range.className = 'muted';
+            range.style.textAlign = 'center';
+            range.textContent = 'Real value between ' + fmtSI(ohms * (1 - tol / 100), 'Ω') + ' and ' + fmtSI(ohms * (1 + tol / 100), 'Ω');
+            colorResult.appendChild(range);
+        }
+
+        function setBands(n) {
+            bandCount.n = n;
+            document.getElementById('band-3-wrap').classList.toggle('hidden', n === 4);
+            document.getElementById('bands-4').classList.toggle('on', n === 4);
+            document.getElementById('bands-5').classList.toggle('on', n === 5);
+            updateColorCode();
+        }
+
+        document.getElementById('bands-4').addEventListener('click', function () { setBands(4); });
+        document.getElementById('bands-5').addEventListener('click', function () { setBands(5); });
+        Object.keys(sel).forEach(function (k) { sel[k].addEventListener('change', updateColorCode); });
+        updateColorCode();
+
+        // ---------- Series / parallel ----------
+
+        const spList = document.getElementById('sp-list');
+        const spResult = document.getElementById('sp-result');
+
+        function calcSeriesParallel() {
+            const parts = spList.value.split(/[\s,;]+/).filter(function (p) { return p !== ''; });
+            if (parts.length < 2) { showMessage(spResult, 'Type at least two resistor values.', false); return; }
+            const values = parts.map(parseSI);
+            if (values.some(function (v) { return v === null || Number.isNaN(v) || v < 0; })) {
+                showMessage(spResult, "I couldn't read one of the values. Use positive numbers like 100, 4.7k or 1M.", true);
+                return;
+            }
+            const series = values.reduce(function (a, b) { return a + b; }, 0);
+            const parallel = values.some(function (v) { return v === 0; })
+                ? 0
+                : 1 / values.reduce(function (a, b) { return a + 1 / b; }, 0);
+
+            spResult.textContent = '';
+            spResult.appendChild(row(values.length + ' resistors in series', fmtSI(series, 'Ω'), true));
+            spResult.appendChild(row(values.length + ' resistors in parallel', fmtSI(parallel, 'Ω'), true));
+        }
+
+        document.getElementById('sp-calc').addEventListener('click', calcSeriesParallel);
+        spList.addEventListener('keydown', function (e) { if (e.key === 'Enter') calcSeriesParallel(); });
+        document.getElementById('sp-clear').addEventListener('click', function () {
+            spList.value = '';
+            showMessage(spResult, 'Result appears here.', false);
+        });
+    </script>
+</body>
+</html>
