@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Oluwabiyi Oluwatunmise — Developer Portfolio</title>
+    <meta name="description" content="Portfolio of Daniel Oluwabiyi Oluwatunmise, an aspiring web developer and Electrical/Electronic Engineering student at UNIOSUN. Projects built with HTML, CSS and JavaScript.">
+    <meta name="theme-color" content="#150f1f">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Daniel Oluwabiyi Oluwatunmise — Developer Portfolio">
+    <meta property="og:description" content="Web projects, a minimax tic-tac-toe game and electronics tools, all built with HTML, CSS and JavaScript.">
+    <meta property="og:url" content="https://danieloluwabiyi84.github.io/my-portfolio/">
+    <meta property="og:image" content="https://danieloluwabiyi84.github.io/my-portfolio/project-portfolio.jpg">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
@@ -40,10 +48,6 @@
 
     <p>He is enthusiastic, detail-oriented, and committed to continuous growth, with a keen interest in developing responsive and efficient web solutions. He is eager to apply his foundational knowledge to real-world projects and contribute to a collaborative development environment.</p>
 
-    <div style="text-align:center; margin: 24px auto;">
-        <a href="resume.pdf" download class="resume-btn">📄 Download Resume</a>
-    </div>
-
     <div class="reveal">
         <h3 id="education">Education</h3>
         <ul>
@@ -53,7 +57,7 @@
     </div>
 
     <div class="reveal">
-        <h3>Work Experience / My Projects</h3>
+        <h3>Work Experience</h3>
         <ul>
             <li>I do not have any work experience yet. I am just building my portfolio and am ready to learn.</li>
         </ul>
@@ -71,12 +75,20 @@
                 <div class="skill-bar"><div class="skill-fill" data-level="90%"></div></div>
             </div>
             <div class="skill">
-                <div class="skill-label"><span>JavaScript</span><span>50%</span></div>
-                <div class="skill-bar"><div class="skill-fill" data-level="50%"></div></div>
+                <div class="skill-label"><span>JavaScript</span><span>60%</span></div>
+                <div class="skill-bar"><div class="skill-fill" data-level="60%"></div></div>
             </div>
             <div class="skill">
                 <div class="skill-label"><span>Python</span><span>50%</span></div>
                 <div class="skill-bar"><div class="skill-fill" data-level="50%"></div></div>
+            </div>
+            <div class="skill">
+                <div class="skill-label"><span>Algorithms &amp; Problem Solving</span><span>60%</span></div>
+                <div class="skill-bar"><div class="skill-fill" data-level="60%"></div></div>
+            </div>
+            <div class="skill">
+                <div class="skill-label"><span>GitHub &amp; Deployment</span><span>55%</span></div>
+                <div class="skill-bar"><div class="skill-fill" data-level="55%"></div></div>
             </div>
         </div>
     </div>
@@ -90,13 +102,60 @@
 
     <div class="reveal">
         <h3 id="projects">Projects</h3>
-        <ul>
-            <li>
-                <strong>Personal Developer Portfolio</strong><br>
-                A responsive portfolio site built with HTML, CSS and JavaScript, featuring a dark/light theme toggle, scroll animations, and a sticky nav bar.<br>
-                <a href="https://github.com/danieloluwabiyi84/my-portfolio" target="_blank">View source on GitHub</a>
-            </li>
-        </ul>
+        <div class="projects-grid">
+
+            <div class="project-card">
+                <img src="project-game.jpg" alt="Screenshot of the Tic Tac Toe game on a notebook-style board" width="800" height="500" loading="lazy">
+                <div class="project-body">
+                    <h4>Tic Tac Toe (X and O) Game</h4>
+                    <p>A phone-friendly game with three board themes, a computer opponent (Easy, Medium and an unbeatable Hard level using the minimax algorithm), score history saved on your device, and offline tournaments against bots.</p>
+                    <div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Minimax AI</span></div>
+                    <div class="project-links">
+                        <a class="btn-link primary" href="tic-tac-toe.html">▶ Play the game</a>
+                        <a class="btn-link" href="https://github.com/danieloluwabiyi84/my-portfolio/blob/main/tic-tac-toe.html" target="_blank" rel="noopener">Source</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <img src="project-electronics.jpg" alt="Screenshot of the Ohm's law calculator" width="800" height="500" loading="lazy">
+                <div class="project-body">
+                    <h4>Electronics Tools</h4>
+                    <p>An Ohm's law calculator, a resistor colour code decoder (4 and 5 bands) and a series/parallel resistor calculator. It understands values like 4.7k, 10m and 4k7.</p>
+                    <div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Electronics</span></div>
+                    <div class="project-links">
+                        <a class="btn-link primary" href="electronics-tools.html">▶ Try the tools</a>
+                        <a class="btn-link" href="https://github.com/danieloluwabiyi84/my-portfolio/blob/main/electronics-tools.html" target="_blank" rel="noopener">Source</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <img src="project-payment.jpg" alt="Screenshot of the demo checkout page" width="800" height="500" loading="lazy">
+                <div class="project-body">
+                    <h4>Demo Checkout Page</h4>
+                    <p>A checkout page with automatic card number formatting, card type detection and a simulated payment button. It is a demo only: no real payments are processed.</p>
+                    <div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Forms</span></div>
+                    <div class="project-links">
+                        <a class="btn-link primary" href="payment-page.html">▶ View the demo</a>
+                        <a class="btn-link" href="https://github.com/danieloluwabiyi84/my-portfolio/blob/main/payment-page.html" target="_blank" rel="noopener">Source</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <img src="project-portfolio.jpg" alt="Screenshot of this portfolio's skills section" width="800" height="500" loading="lazy">
+                <div class="project-body">
+                    <h4>This Portfolio Website</h4>
+                    <p>A responsive portfolio with a dark/light theme toggle, scroll animations, animated skill bars, a sticky two-row navigation bar and a contact form. Hosted on GitHub Pages and Vercel.</p>
+                    <div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>GitHub Pages</span></div>
+                    <div class="project-links">
+                        <a class="btn-link" href="https://github.com/danieloluwabiyi84/my-portfolio" target="_blank" rel="noopener">Source on GitHub</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <h3><a href="my-hobbies.html">My Hobbies</a></h3>
@@ -125,6 +184,29 @@
                 </svg>
             </a>
         </div>
+
+        <form id="contact-form" class="contact-form" action="https://formsubmit.co/danieloluwabiyi84@gmail.com" method="POST">
+            <h3>Send Me a Message</h3>
+            <p class="form-intro">Prefer to type it here? Your message goes straight to my email.</p>
+
+            <label for="cf-name">Your name</label>
+            <input id="cf-name" name="name" type="text" maxlength="80" autocomplete="name" required>
+
+            <label for="cf-email">Your email</label>
+            <input id="cf-email" name="email" type="email" maxlength="120" autocomplete="email" required>
+
+            <label for="cf-message">Message</label>
+            <textarea id="cf-message" name="message" rows="5" maxlength="2000" required></textarea>
+
+            <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <input type="hidden" name="_subject" value="New message from my portfolio website">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_template" value="table">
+
+            <button type="submit" id="cf-send" class="form-btn">Send message</button>
+            <p id="cf-status" role="status" aria-live="polite"></p>
+        </form>
+
         <footer>Copyright © 2026 Daniel Oluwabiyi Oluwatunmise, all rights reserved.</footer>
     </article>
 
@@ -133,4 +215,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
